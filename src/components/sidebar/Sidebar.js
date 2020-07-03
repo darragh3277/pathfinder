@@ -60,7 +60,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Sidebar = (props) => {
-  const { window, handleDrawerToggle, mobileOpen } = props;
+  const {
+    window,
+    handleDrawerToggle,
+    mobileOpen,
+    handleAlgorithmChange,
+    selectedAlgorithm,
+    handleGridChange,
+    selectedGrid,
+    handleSpeedChange,
+    selectedSpeed,
+  } = props;
   const theme = useTheme();
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -72,20 +82,20 @@ const Sidebar = (props) => {
       <div className={classes.toolbar} />
       <Divider />
       <Dropdown
-        value="AlgorithmState"
-        handleChange="handleAlgorithmChange"
+        value={selectedAlgorithm}
+        handleChange={handleAlgorithmChange}
         options={algorithms}
         label="Algorithm"
       />
       <Dropdown
-        value="GridState"
-        handleChange="handleGridChange"
+        value={selectedGrid}
+        handleChange={handleGridChange}
         options={grids}
         label="Grid"
       />
       <Dropdown
-        value="SppedState"
-        handleChange="handleSpeedChange"
+        value={selectedSpeed}
+        handleChange={handleSpeedChange}
         options={speeds}
         label="Speed"
       />

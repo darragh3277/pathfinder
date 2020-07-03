@@ -26,8 +26,8 @@ export default ({ value, handleChange, options, label }) => {
       <Select
         labelId={"select-label-" + label}
         id={"select-" + label}
-        //   value={value}
-        //   onChange={handleChange}
+        value={value}
+        onChange={handleChange}
       >
         {buildOptions(options)}
       </Select>

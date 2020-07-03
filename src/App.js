@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Sidebar from "./components/sidebar/Sidebar";
@@ -13,9 +13,24 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function ResponsiveDrawer() {
+function Pathfinder() {
   const classes = useStyles();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState("");
+  const [selectedGrid, setSelectedGrid] = useState("");
+  const [selectedSpeed, setSelectedSpeed] = useState("");
+
+  const handleAlgorithmChange = (e) => {
+    setSelectedAlgorithm(e.target.value);
+  };
+
+  const handleGridChange = (e) => {
+    setSelectedGrid(e.target.value);
+  };
+
+  const handleSpeedChange = (e) => {
+    setSelectedSpeed(e.target.value);
+  };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -28,13 +43,19 @@ function ResponsiveDrawer() {
       <Sidebar
         handleDrawerToggle={handleDrawerToggle}
         mobileOpen={mobileOpen}
+        handleAlgorithmChange={handleAlgorithmChange}
+        selectedAlgorithm={selectedAlgorithm}
+        handleSpeedChange={handleSpeedChange}
+        selectedSpeed={selectedSpeed}
+        handleGridChange={handleGridChange}
+        selectedGrid={selectedGrid}
       />
       <Grid />
     </div>
   );
 }
 
-ResponsiveDrawer.propTypes = {
+Pathfinder.propTypes = {
   /**
    * Injected by the documentation to work in an iframe.
    * You won't need it on your project.
@@ -42,4 +63,4 @@ ResponsiveDrawer.propTypes = {
   window: PropTypes.func,
 };
 
-export default ResponsiveDrawer;
+export default Pathfinder;
