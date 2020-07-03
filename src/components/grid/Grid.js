@@ -28,8 +28,27 @@ const Grid = () => {
     let height = gridRef.current.clientHeight;
     let rows = Math.floor(width / blockDimension);
     let cols = Math.floor(height / blockDimension);
-    console.log(width, height, rows, cols);
+    buildGrid(rows, cols);
   });
+
+  const buildGrid = (numRows, numCols) => {
+    const empty = 0;
+    const start = 1;
+    const end = 2;
+    const wall = 3;
+
+    let row = [];
+    for (let i = 0; i < numCols; i++) {
+      row.push(0);
+    }
+    let grid = [];
+    for (let i = 0; i < numRows; i++) {
+      grid.push(row);
+    }
+    // grid[10][10] = start;
+    // grid[20][20] = end;
+    console.log(grid);
+  };
 
   return (
     <main className={classes.content}>

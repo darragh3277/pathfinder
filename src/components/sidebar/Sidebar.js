@@ -1,16 +1,39 @@
 import React from "react";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import MailIcon from "@material-ui/icons/Mail";
 import Divider from "@material-ui/core/Divider";
+import Dropdown from "./dropdown/Dropdown";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { Button, Grid } from "@material-ui/core";
+// import Dijkstra from "../../algorithms/Dijkstra";
 
 const drawerWidth = 240;
+
+const algorithms = [
+  { id: 1, name: "Dijkstra" },
+  { id: 2, name: "A*" },
+  { id: 3, name: "Greedy Best-first Search" },
+  { id: 4, name: "Swarm Algorithm" },
+  { id: 5, name: "Convergent Swarm Algorithm" },
+  { id: 6, name: "Bidirectional Swarm Algorithm" },
+  { id: 7, name: "Breadth-first Search" },
+  { id: 8, name: "Depth-first Search" },
+];
+
+const grids = [
+  { id: 1, name: "Recursive Division" },
+  { id: 2, name: "Recursive Division (vertical skew" },
+  { id: 2, name: "Recursive Division (horizontal skew" },
+  { id: 4, name: "Basic Random Maze" },
+  { id: 5, name: "Basic Weight Maze" },
+  { id: 6, name: "Simple Stair Pattern" },
+];
+
+const speeds = [
+  { id: 1, name: "Fast", speed: 10 },
+  { id: 2, name: "Medium", speed: 100 },
+  { id: 3, name: "Slow", speed: 500 },
+];
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -24,6 +47,16 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: "70%",
+  },
+  sidebar: {
+    textAlign: "center",
+  },
+  button: {
+    width: "70%",
+  },
 }));
 
 const Sidebar = (props) => {
@@ -35,30 +68,52 @@ const Sidebar = (props) => {
   const classes = useStyles();
 
   const drawer = (
-    <div>
+    <div className={classes.sidebar}>
       <div className={classes.toolbar} />
       <Divider />
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
+      <Dropdown
+        value="AlgorithmState"
+        handleChange="handleAlgorithmChange"
+        options={algorithms}
+        label="Algorithm"
+      />
+      <Dropdown
+        value="GridState"
+        handleChange="handleGridChange"
+        options={grids}
+        label="Grid"
+      />
+      <Dropdown
+        value="SppedState"
+        handleChange="handleSpeedChange"
+        options={speeds}
+        label="Speed"
+      />
+      <Grid>
+        <Button className={classes.button} color="primary">
+          Weight
+        </Button>
+      </Grid>
+      <Grid>
+        <Button className={classes.button} color="primary">
+          Bomb
+        </Button>
+      </Grid>
+      <Grid>
+        <Button className={classes.button} color="primary">
+          Clear Path
+        </Button>
+      </Grid>
+      <Grid>
+        <Button className={classes.button} color="primary">
+          Clear Board
+        </Button>
+      </Grid>
+      <Grid>
+        <Button className={classes.button} variant="contained" color="primary">
+          Run
+        </Button>
+      </Grid>
     </div>
   );
 
