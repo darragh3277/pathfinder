@@ -5,6 +5,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Grid from "./components/grid/Grid";
 import Header from "./components/header/Header";
 import { makeStyles } from "@material-ui/core/styles";
+import { GRID_OBJECTS } from "./constants/GridObjects";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -13,7 +14,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const blockDimension = 10; //size of each block
+const nodeDimension = 20; //size of each block
 
 function Pathfinder() {
   const classes = useStyles();
@@ -40,28 +41,44 @@ function Pathfinder() {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleClickWeightButton = (e) => {
+    //todo
+  };
+
+  const handleClickDetourButton = (e) => {
+    //todo
+  };
+
+  const handleClickClearPathButton = (e) => {
+    //todo
+  };
+
+  const handleClickClearBoardButton = (e) => {
+    //todo
+  };
+
+  const handleClickRunButton = (e) => {
+    //todo
+  };
+
   useEffect(() => {
-    if (grid.length === 0) {
-      setGrid(buildGrid());
-    }
-  });
+    console.log("updating grid..");
+    setGrid(buildGrid());
+  }, []); //onMount
 
   const buildGrid = () => {
+    let grid = [];
     let width = gridRef.current.clientWidth;
     let height = gridRef.current.clientHeight;
-    let numRows = Math.floor(width / blockDimension);
-    let numCols = Math.floor(height / blockDimension);
-    const empty = 0;
-    const start = 1;
-    const end = 2;
-    const wall = 3;
+    let numRows = Math.floor(width / nodeDimension);
+    let numCols = Math.floor(height / nodeDimension);
+    console.log(width, height, numRows, numCols);
 
     let row = [];
-    for (let i = 0; i < numCols; i++) {
-      row.push(0);
-    }
-    let grid = [];
     for (let i = 0; i < numRows; i++) {
+      row.push(GRID_OBJECTS.EMPTY);
+    }
+    for (let i = 0; i < numCols; i++) {
       grid.push(row);
     }
     return grid;
@@ -83,8 +100,13 @@ function Pathfinder() {
         selectedSpeed={selectedSpeed}
         handleGridChange={handleGridChange}
         selectedGrid={selectedGrid}
+        handleClickWeightButton={handleClickWeightButton}
+        handleClickDetourButton={handleClickDetourButton}
+        handleClickClearPathButton={handleClickClearPathButton}
+        handleClickClearBoardButton={handleClickClearBoardButton}
+        handleClickRunButton={handleClickRunButton}
       />
-      <Grid gridRef={gridRef} />
+      <Grid gridRef={gridRef} grid={grid} nodeDimension={nodeDimension} />
     </div>
   );
 }

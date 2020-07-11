@@ -70,6 +70,11 @@ const Sidebar = (props) => {
     selectedGrid,
     handleSpeedChange,
     selectedSpeed,
+    handleClickWeightButton,
+    handleClickDetourButton,
+    handleClickClearPathButton,
+    handleClickClearBoardButton,
+    handleClickRunButton,
   } = props;
   const theme = useTheme();
   const container =
@@ -100,27 +105,48 @@ const Sidebar = (props) => {
         label="Speed"
       />
       <Grid>
-        <Button className={classes.button} color="primary">
+        <Button
+          className={classes.button}
+          color="primary"
+          onClick={handleClickWeightButton}
+        >
           Weight
         </Button>
       </Grid>
       <Grid>
-        <Button className={classes.button} color="primary">
-          Bomb
+        <Button
+          className={classes.button}
+          color="primary"
+          onClick={handleClickDetourButton}
+        >
+          Detour
         </Button>
       </Grid>
       <Grid>
-        <Button className={classes.button} color="primary">
+        <Button
+          className={classes.button}
+          color="primary"
+          onClick={handleClickClearPathButton}
+        >
           Clear Path
         </Button>
       </Grid>
       <Grid>
-        <Button className={classes.button} color="primary">
+        <Button
+          className={classes.button}
+          color="primary"
+          onClick={handleClickClearBoardButton}
+        >
           Clear Board
         </Button>
       </Grid>
       <Grid>
-        <Button className={classes.button} variant="contained" color="primary">
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          onClick={handleClickRunButton}
+        >
           Run
         </Button>
       </Grid>
