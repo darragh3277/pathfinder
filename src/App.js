@@ -62,28 +62,33 @@ function Pathfinder() {
     //todo
   };
 
-  const handleMouseDown = (col, row) => {
+  const handleMouseDown = (col, row, ref) => {
     setMousePressed(true);
-    updateGrid(col, row);
+    updateGrid(col, row, ref);
   };
 
-  const handleMouseEnter = (col, row) => {
+  const handleMouseEnter = (col, row, ref) => {
     if (mousePressed === false) return;
-    updateGrid(col, row);
+    updateGrid(col, row, ref);
   };
 
   const handleMouseUp = () => {
     setMousePressed(false);
   };
 
-  const updateGrid = (col, row) => {
-    const newGrid = [...grid];
+  const updateGrid = (col, row, ref) => {
+    //triggering large amounts of react state changes
+    //causes performance issues. I've implemented a hacky
+    //solution to update the DOM directly using refs.
+    //This should not be replicated
     if (grid[row][col] === GRID_OBJECTS.WALL) {
+      ref.current.classList.remove("makeStyles-wall-32");
       grid[row][col] = GRID_OBJECTS.EMPTY;
     } else if (grid[row][col] === GRID_OBJECTS.EMPTY) {
+      ref.current.classList.add("makeStyles-wall-32");
       grid[row][col] = GRID_OBJECTS.WALL;
     }
-    setGrid(newGrid);
+    setGrid(grid);
   };
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { GRID_OBJECTS } from "../../constants/GridObjects";
 import FlagIcon from "@material-ui/icons/Flag";
@@ -17,7 +17,7 @@ const useStyles = makeStyles(() => ({
   },
   wall: {
     animationName: "$wallAnimation",
-    animationDuration: "1s",
+    animationDuration: "0.3s",
     animationTimingFunction: "ease-out",
     animationDelay: "0",
     animationDirection: "alternate",
@@ -54,6 +54,7 @@ const getRowObject = (classes, object) => {
 
 function Node(props) {
   const classes = useStyles();
+  const nodeRef = useRef();
   const {
     row,
     col,
@@ -65,11 +66,13 @@ function Node(props) {
 
   return (
     <td
-      className={
-        classes.node + " " + (node === GRID_OBJECTS.WALL ? classes.wall : null)
-      }
-      onMouseDown={() => handleMouseDown(col, row)}
-      onMouseEnter={() => handleMouseEnter(col, row)}
+      ref={nodeRef}
+      //   className={
+      //     classes.node + " " + (node === GRID_OBJECTS.WALL ? classes.wall : null)
+      //   }
+      className={classes.node}
+      onMouseDown={() => handleMouseDown(col, row, nodeRef)}
+      onMouseEnter={() => handleMouseEnter(col, row, nodeRef)}
       onMouseUp={handleMouseUp}
     >
       {getRowObject(classes, node)}
