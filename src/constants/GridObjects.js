@@ -3,4 +3,6 @@ export const GRID_OBJECTS = {
   START: 1,
   END: 2,
   WALL: 3,
+  DETOUR: 4,
+  WEIGHT: 5,
 };

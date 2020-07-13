@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import Node from "../node/Node";
 
 const useStyles = makeStyles((theme) => ({
   // necessary for content to be below app bar
@@ -15,11 +16,6 @@ const useStyles = makeStyles((theme) => ({
   gridContainer: {
     flexGrow: "1",
   },
-  node: {
-    width: "20px",
-    height: "20px",
-    border: "1px solid black",
-  },
   gridTable: {
     border: "1px solid black",
     borderCollapse: "collapse",
@@ -28,27 +24,40 @@ const useStyles = makeStyles((theme) => ({
 
 const Grid = (props) => {
   const classes = useStyles();
-  const { gridRef, grid } = props;
-
-  const nodes = grid.map((cols, i) => {
-    console.log(grid.length, cols.length);
-    const columns = cols.map((node, j) => {
-      return <td key={j} className={classes.node}></td>;
-    });
-
-    return (
-      <tr key={i} className={classes.gridTable}>
-        {columns}
-      </tr>
-    );
-  });
+  const {
+    gridRef,
+    grid,
+    handleMouseDown,
+    handleMouseEnter,
+    handleMouseUp,
+  } = props;
 
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
       <Container ref={gridRef} className={classes.gridContainer}>
         <table className={classes.gridTable}>
-          <tbody>{nodes}</tbody>
+          <tbody>
+            {grid.map((rows, rowInd) => {
+              return (
+                <tr key={rowInd} className={classes.gridTable}>
+                  {rows.map((node, nodeInd) => {
+                    return (
+                      <Node
+                        key={nodeInd}
+                        row={rowInd}
+                        col={nodeInd}
+                        node={node}
+                        handleMouseDown={handleMouseDown}
+                        handleMouseEnter={handleMouseEnter}
+                        handleMouseUp={handleMouseUp}
+                      />
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </Container>
     </main>

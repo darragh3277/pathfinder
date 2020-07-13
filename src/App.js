@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const nodeDimension = 20; //size of each block
+const nodeDimension = 25; //size of each block
 
 function Pathfinder() {
   const classes = useStyles();
@@ -22,6 +22,7 @@ function Pathfinder() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("");
   const [selectedGrid, setSelectedGrid] = useState("");
   const [selectedSpeed, setSelectedSpeed] = useState("Fast");
+  const [mousePressed, setMousePressed] = useState(false);
   const [grid, setGrid] = useState([]);
   const gridRef = useRef();
 
@@ -53,16 +54,39 @@ function Pathfinder() {
     //todo
   };
 
-  const handleClickClearBoardButton = (e) => {
-    //todo
+  const handleClickClearBoardButton = () => {
+    setGrid(buildGrid());
   };
 
   const handleClickRunButton = (e) => {
     //todo
   };
 
+  const handleMouseDown = (col, row) => {
+    setMousePressed(true);
+    updateGrid(col, row);
+  };
+
+  const handleMouseEnter = (col, row) => {
+    if (mousePressed === false) return;
+    updateGrid(col, row);
+  };
+
+  const handleMouseUp = () => {
+    setMousePressed(false);
+  };
+
+  const updateGrid = (col, row) => {
+    const newGrid = [...grid];
+    if (grid[row][col] === GRID_OBJECTS.WALL) {
+      grid[row][col] = GRID_OBJECTS.EMPTY;
+    } else if (grid[row][col] === GRID_OBJECTS.EMPTY) {
+      grid[row][col] = GRID_OBJECTS.WALL;
+    }
+    setGrid(newGrid);
+  };
+
   useEffect(() => {
-    console.log("updating grid..");
     setGrid(buildGrid());
   }, []); //onMount
 
@@ -72,19 +96,19 @@ function Pathfinder() {
     let height = gridRef.current.clientHeight;
     let numRows = Math.floor(width / nodeDimension);
     let numCols = Math.floor(height / nodeDimension);
-    console.log(width, height, numRows, numCols);
 
     let row = [];
     for (let i = 0; i < numRows; i++) {
       row.push(GRID_OBJECTS.EMPTY);
     }
     for (let i = 0; i < numCols; i++) {
-      grid.push(row);
+      grid.push([...row]);
     }
+    //set default start and end points
+    const verticalMidPoint = Math.floor(grid.length / 2);
+    grid[verticalMidPoint][Math.floor(row.length * 0.25)] = GRID_OBJECTS.START;
+    grid[verticalMidPoint][Math.floor(row.length * 0.75)] = GRID_OBJECTS.END;
     return grid;
-    // grid[10][10] = start;
-    // grid[20][20] = end;
-    // console.log(grid);
   };
 
   return (
@@ -106,7 +130,14 @@ function Pathfinder() {
         handleClickClearBoardButton={handleClickClearBoardButton}
         handleClickRunButton={handleClickRunButton}
       />
-      <Grid gridRef={gridRef} grid={grid} nodeDimension={nodeDimension} />
+      <Grid
+        gridRef={gridRef}
+        grid={grid}
+        nodeDimension={nodeDimension}
+        handleMouseDown={handleMouseDown}
+        handleMouseEnter={handleMouseEnter}
+        handleMouseUp={handleMouseUp}
+      />
     </div>
   );
 }
