@@ -16,8 +16,28 @@ const useStyles = makeStyles(() => ({
     height: "auto",
   },
   wall: {
-    backgroundColor: "blue",
-    // transition: "background-color 0.25s",
+    animationName: "$wallAnimation",
+    animationDuration: "1s",
+    animationTimingFunction: "ease-out",
+    animationDelay: "0",
+    animationDirection: "alternate",
+    animationIterationCount: "1",
+    animationFillMode: "forwards",
+    animationPlayState: "running",
+  },
+  "@keyframes wallAnimation": {
+    "0%": {
+      transform: "scale(0.3)",
+      backgroundColor: "rgb(63, 81, 181)",
+    },
+    "50%": {
+      transform: "scale(1.2)",
+      backgroundColor: "rgb(63, 81, 181)",
+    },
+    "100%": {
+      transform: "scale(1.0)",
+      backgroundColor: "rgb(63, 81, 181)",
+    },
   },
 }));
 
