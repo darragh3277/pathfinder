@@ -1,18 +1,13 @@
 import React, { useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import GridObject from "./GridObject";
 import { GRID_OBJECTS } from "../../constants/GridObjects";
-import FlagIcon from "@material-ui/icons/Flag";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 
 const useStyles = makeStyles(() => ({
   node: {
     width: "25px",
     height: "25px",
     border: "1px solid black",
-  },
-  gridObject: {
-    width: "100%",
-    height: "auto",
   },
   wall: {
     animationName: "$wallAnimation",
@@ -39,15 +34,9 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const getRowObject = (classes, object) => {
-  switch (object) {
-    case GRID_OBJECTS.START:
-      return <PlayArrowIcon className={classes.gridObject} />;
-    case GRID_OBJECTS.END:
-      return <FlagIcon className={classes.gridObject} />;
-    default:
-      return null;
-  }
+const onDragOver = (e) => {
+  e.preventDefault();
+  return false;
 };
 
 function Node(props) {
@@ -58,6 +47,8 @@ function Node(props) {
     handleMouseDown,
     handleMouseEnter,
     nodeDimension,
+    handleDragStart,
+    handleDrop,
   } = props;
   const classes = useStyles({ nodeDimension });
   const nodeRef = useRef();
@@ -66,10 +57,17 @@ function Node(props) {
     <td
       ref={nodeRef}
       className={classes.node}
-      onMouseDown={() => handleMouseDown(col, row, nodeRef)}
-      onMouseEnter={() => handleMouseEnter(col, row, nodeRef)}
+      onMouseDown={() => handleMouseDown(col, row, node, nodeRef)}
+      onMouseEnter={() => handleMouseEnter(col, row, node, nodeRef)}
+      onDrop={(e) => handleDrop(col, row, e)}
+      onDragOver={onDragOver}
     >
-      {getRowObject(classes, node)}
+      <GridObject
+        object={node}
+        handleDragStart={handleDragStart}
+        col={col}
+        row={row}
+      />
     </td>
   );
 }

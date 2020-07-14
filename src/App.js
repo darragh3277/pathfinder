@@ -23,6 +23,7 @@ function Pathfinder() {
   const [selectedSpeed, setSelectedSpeed] = useState("Fast");
   const [grid, setGrid] = useState([]);
   const gridRef = useRef();
+  let dragObject;
   let mousePressed = false;
 
   const handleAlgorithmChange = (e) => {
@@ -53,12 +54,34 @@ function Pathfinder() {
     //todo
   };
 
+  const handleDragStart = (col, row, e) => {
+    e.dataTransfer.setData("col", col);
+    e.dataTransfer.setData("row", row);
+    e.dataTransfer.setData("object", grid[row][col]);
+  };
+
+  const handleDrop = (col, row, e) => {
+    //todo
+    e.preventDefault();
+    if (
+      grid[row][col] === GRID_OBJECTS.START ||
+      grid[row][col] === GRID_OBJECTS.END
+    )
+      return;
+    grid[row][col] = parseInt(e.dataTransfer.getData("object"));
+    grid[e.dataTransfer.getData("row")][e.dataTransfer.getData("col")] =
+      GRID_OBJECTS.EMPTY;
+    e.target.classList.remove("makeStyles-wall-31");
+    setGrid([...grid]);
+    console.log("drag end", col, row, e.target.classList);
+  };
+
   const handleClickClearBoardButton = () => {
     //Another hacky solution to get react to play nice
     //with altering the DOM directly
-    const walls = gridRef.current.querySelectorAll(".makeStyles-wall-32");
+    const walls = gridRef.current.querySelectorAll(".makeStyles-wall-31");
     walls.forEach((wall) => {
-      wall.classList.remove("makeStyles-wall-32");
+      wall.classList.remove("makeStyles-wall-31");
     });
     setGrid(buildGrid());
   };
@@ -67,12 +90,16 @@ function Pathfinder() {
     //todo
   };
 
-  const handleMouseDown = (col, row, ref) => {
+  const handleMouseDown = (col, row, object, ref) => {
+    if (object !== GRID_OBJECTS.EMPTY && object !== GRID_OBJECTS.WALL)
+      return false;
     mousePressed = true;
     updateGrid(col, row, ref);
   };
 
-  const handleMouseEnter = (col, row, ref) => {
+  const handleMouseEnter = (col, row, object, ref) => {
+    if (object !== GRID_OBJECTS.EMPTY && object !== GRID_OBJECTS.WALL)
+      return false;
     if (mousePressed === false) return;
     updateGrid(col, row, ref);
   };
@@ -93,11 +120,12 @@ function Pathfinder() {
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
     //This should not be replicated
+    console.log("h", col, row, ref);
     if (grid[row][col] === GRID_OBJECTS.WALL) {
-      ref.current.classList.remove("makeStyles-wall-32");
+      ref.current.classList.remove("makeStyles-wall-31");
       grid[row][col] = GRID_OBJECTS.EMPTY;
     } else if (grid[row][col] === GRID_OBJECTS.EMPTY) {
-      ref.current.classList.add("makeStyles-wall-32");
+      ref.current.classList.add("makeStyles-wall-31");
       grid[row][col] = GRID_OBJECTS.WALL;
     }
   };
@@ -153,6 +181,8 @@ function Pathfinder() {
         handleMouseEnter={handleMouseEnter}
         handleMouseUp={handleMouseUp}
         handleMouseLeave={handleMouseLeave}
+        handleDragStart={handleDragStart}
+        handleDrop={handleDrop}
       />
     </div>
   );

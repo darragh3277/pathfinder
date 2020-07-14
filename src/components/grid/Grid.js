@@ -32,6 +32,8 @@ const Grid = (props) => {
     handleMouseUp,
     handleMouseLeave,
     nodeDimension,
+    handleDragStart,
+    handleDrop,
   } = props;
 
   return (
@@ -57,6 +59,8 @@ const Grid = (props) => {
                         handleMouseDown={handleMouseDown}
                         handleMouseEnter={handleMouseEnter}
                         nodeDimension={nodeDimension}
+                        handleDragStart={handleDragStart}
+                        handleDrop={handleDrop}
                       />
                     );
                   })}
