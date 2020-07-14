@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Sidebar from "./components/sidebar/Sidebar";
 import Grid from "./components/grid/Grid";
@@ -22,9 +21,9 @@ function Pathfinder() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("");
   const [selectedGrid, setSelectedGrid] = useState("");
   const [selectedSpeed, setSelectedSpeed] = useState("Fast");
-  const [mousePressed, setMousePressed] = useState(false);
   const [grid, setGrid] = useState([]);
   const gridRef = useRef();
+  let mousePressed = false;
 
   const handleAlgorithmChange = (e) => {
     setSelectedAlgorithm(e.target.value);
@@ -55,6 +54,12 @@ function Pathfinder() {
   };
 
   const handleClickClearBoardButton = () => {
+    //Another hacky solution to get react to play nice
+    //with altering the DOM directly
+    const walls = gridRef.current.querySelectorAll(".makeStyles-wall-32");
+    walls.forEach((wall) => {
+      wall.classList.remove("makeStyles-wall-32");
+    });
     setGrid(buildGrid());
   };
 
@@ -63,7 +68,7 @@ function Pathfinder() {
   };
 
   const handleMouseDown = (col, row, ref) => {
-    setMousePressed(true);
+    mousePressed = true;
     updateGrid(col, row, ref);
   };
 
@@ -73,7 +78,14 @@ function Pathfinder() {
   };
 
   const handleMouseUp = () => {
-    setMousePressed(false);
+    mousePressed = false;
+    setGrid([...grid]);
+  };
+
+  const handleMouseLeave = () => {
+    if (mousePressed === false) return;
+    mousePressed = false;
+    setGrid([...grid]);
   };
 
   const updateGrid = (col, row, ref) => {
@@ -88,7 +100,6 @@ function Pathfinder() {
       ref.current.classList.add("makeStyles-wall-32");
       grid[row][col] = GRID_OBJECTS.WALL;
     }
-    setGrid(grid);
   };
 
   useEffect(() => {
@@ -96,12 +107,11 @@ function Pathfinder() {
   }, []); //onMount
 
   const buildGrid = () => {
-    let grid = [];
-    let width = gridRef.current.clientWidth;
-    let height = gridRef.current.clientHeight;
-    let numRows = Math.floor(width / nodeDimension);
-    let numCols = Math.floor(height / nodeDimension);
-
+    const grid = [];
+    const width = gridRef.current.clientWidth;
+    const height = gridRef.current.clientHeight;
+    const numRows = Math.floor(width / nodeDimension);
+    const numCols = Math.floor(height / nodeDimension);
     let row = [];
     for (let i = 0; i < numRows; i++) {
       row.push(GRID_OBJECTS.EMPTY);
@@ -142,17 +152,10 @@ function Pathfinder() {
         handleMouseDown={handleMouseDown}
         handleMouseEnter={handleMouseEnter}
         handleMouseUp={handleMouseUp}
+        handleMouseLeave={handleMouseLeave}
       />
     </div>
   );
 }
-
-Pathfinder.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
-};
 
 export default Pathfinder;

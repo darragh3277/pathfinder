@@ -5,7 +5,6 @@ import FlagIcon from "@material-ui/icons/Flag";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 
 const useStyles = makeStyles(() => ({
-  // necessary for content to be below app bar
   node: {
     width: "25px",
     height: "25px",
@@ -19,7 +18,6 @@ const useStyles = makeStyles(() => ({
     animationName: "$wallAnimation",
     animationDuration: "0.3s",
     animationTimingFunction: "ease-out",
-    animationDelay: "0",
     animationDirection: "alternate",
     animationIterationCount: "1",
     animationFillMode: "forwards",
@@ -53,27 +51,23 @@ const getRowObject = (classes, object) => {
 };
 
 function Node(props) {
-  const classes = useStyles();
-  const nodeRef = useRef();
   const {
     row,
     col,
     node,
     handleMouseDown,
     handleMouseEnter,
-    handleMouseUp,
+    nodeDimension,
   } = props;
+  const classes = useStyles({ nodeDimension });
+  const nodeRef = useRef();
 
   return (
     <td
       ref={nodeRef}
-      //   className={
-      //     classes.node + " " + (node === GRID_OBJECTS.WALL ? classes.wall : null)
-      //   }
       className={classes.node}
       onMouseDown={() => handleMouseDown(col, row, nodeRef)}
       onMouseEnter={() => handleMouseEnter(col, row, nodeRef)}
-      onMouseUp={handleMouseUp}
     >
       {getRowObject(classes, node)}
     </td>

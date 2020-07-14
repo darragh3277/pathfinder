@@ -30,13 +30,19 @@ const Grid = (props) => {
     handleMouseDown,
     handleMouseEnter,
     handleMouseUp,
+    handleMouseLeave,
+    nodeDimension,
   } = props;
 
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
       <Container ref={gridRef} className={classes.gridContainer}>
-        <table className={classes.gridTable}>
+        <table
+          className={classes.gridTable}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+        >
           <tbody>
             {grid.map((rows, rowInd) => {
               return (
@@ -50,7 +56,7 @@ const Grid = (props) => {
                         node={node}
                         handleMouseDown={handleMouseDown}
                         handleMouseEnter={handleMouseEnter}
-                        handleMouseUp={handleMouseUp}
+                        nodeDimension={nodeDimension}
                       />
                     );
                   })}

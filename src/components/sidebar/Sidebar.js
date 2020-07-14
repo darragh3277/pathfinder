@@ -23,7 +23,7 @@ const algorithms = [
 const grids = [
   { id: 1, name: "Recursive Division" },
   { id: 2, name: "Recursive Division (vertical skew" },
-  { id: 2, name: "Recursive Division (horizontal skew" },
+  { id: 3, name: "Recursive Division (horizontal skew" },
   { id: 4, name: "Basic Random Maze" },
   { id: 5, name: "Basic Weight Maze" },
   { id: 6, name: "Simple Stair Pattern" },
