@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
   gridContainer: {
     flexGrow: "1",
+    padding: "0",
   },
   gridTable: {
     border: "1px solid black",

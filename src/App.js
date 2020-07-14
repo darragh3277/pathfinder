@@ -23,7 +23,6 @@ function Pathfinder() {
   const [selectedSpeed, setSelectedSpeed] = useState("Fast");
   const [grid, setGrid] = useState([]);
   const gridRef = useRef();
-  let dragObject;
   let mousePressed = false;
 
   const handleAlgorithmChange = (e) => {
@@ -71,7 +70,7 @@ function Pathfinder() {
     grid[row][col] = parseInt(e.dataTransfer.getData("object"));
     grid[e.dataTransfer.getData("row")][e.dataTransfer.getData("col")] =
       GRID_OBJECTS.EMPTY;
-    e.target.classList.remove("makeStyles-wall-31");
+    e.target.parentElement.classList.remove("makeStyles-wall-31");
     setGrid([...grid]);
     console.log("drag end", col, row, e.target.classList);
   };
@@ -120,7 +119,6 @@ function Pathfinder() {
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
     //This should not be replicated
-    console.log("h", col, row, ref);
     if (grid[row][col] === GRID_OBJECTS.WALL) {
       ref.current.classList.remove("makeStyles-wall-31");
       grid[row][col] = GRID_OBJECTS.EMPTY;
@@ -138,13 +136,15 @@ function Pathfinder() {
     const grid = [];
     const width = gridRef.current.clientWidth;
     const height = gridRef.current.clientHeight;
-    const numRows = Math.floor(width / nodeDimension);
-    const numCols = Math.floor(height / nodeDimension);
+    const numRows = Math.floor(height / nodeDimension);
+    const numCols = Math.floor(width / nodeDimension);
+    console.log(width, height, numCols, numRows);
+    // return [[0]];
     let row = [];
-    for (let i = 0; i < numRows; i++) {
+    for (let i = 0; i < numCols; i++) {
       row.push(GRID_OBJECTS.EMPTY);
     }
-    for (let i = 0; i < numCols; i++) {
+    for (let i = 0; i < numRows; i++) {
       grid.push([...row]);
     }
     //set default start and end points

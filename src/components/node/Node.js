@@ -1,13 +1,11 @@
 import React, { useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import GridObject from "./GridObject";
-import { GRID_OBJECTS } from "../../constants/GridObjects";
 
 const useStyles = makeStyles(() => ({
   node: {
-    width: "25px",
-    height: "25px",
     border: "1px solid black",
+    padding: "0",
   },
   wall: {
     animationName: "$wallAnimation",

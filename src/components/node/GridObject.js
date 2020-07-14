@@ -9,6 +9,11 @@ const useStyles = makeStyles(() => ({
     width: "100%",
     height: "auto",
   },
+  span: {
+    overflow: "hidden",
+    width: "24px",
+    height: "24px",
+  },
 }));
 
 function GridObject(props) {
@@ -17,24 +22,26 @@ function GridObject(props) {
   switch (object) {
     case GRID_OBJECTS.START:
       return (
-        <span
+        <div
           draggable="true"
           onDragStart={(e) => handleDragStart(col, row, e)}
+          className={classes.span}
         >
           <PlayArrowIcon className={classes.object} />
-        </span>
+        </div>
       );
     case GRID_OBJECTS.END:
       return (
-        <span
+        <div
           draggable="true"
           onDragStart={(e) => handleDragStart(col, row, e)}
+          className={classes.span}
         >
           <FlagIcon className={classes.object} />
-        </span>
+        </div>
       );
     default:
-      return <></>;
+      return <div className={classes.span}></div>;
   }
 }
 
