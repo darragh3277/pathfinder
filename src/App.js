@@ -66,7 +66,15 @@ function Pathfinder() {
   };
 
   const handleClickClearPathButton = (e) => {
-    //todo
+    const newGrid = grid.map((rows) => {
+      return rows.map((object) => {
+        if (object === GRID_OBJECTS.VISITED || object === GRID_OBJECTS.PATH) {
+          return GRID_OBJECTS.EMPTY;
+        }
+        return object;
+      });
+    });
+    setGrid(newGrid);
   };
 
   const handleDragStart = (col, row, e) => {
@@ -108,6 +116,7 @@ function Pathfinder() {
       weight.classList.remove("weight");
     });
     setGrid(buildGrid());
+    setDetourAdded(false);
   };
 
   const handleClickRunButton = (e) => {
