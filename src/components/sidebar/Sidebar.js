@@ -5,6 +5,7 @@ import Divider from "@material-ui/core/Divider";
 import Dropdown from "./dropdown/Dropdown";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Button, Grid } from "@material-ui/core";
+import { GRID_OBJECTS } from "../../constants/GridObjects";
 // import Dijkstra from "../../algorithms/Dijkstra";
 
 const drawerWidth = 240;
@@ -70,12 +71,12 @@ const Sidebar = (props) => {
     selectedGrid,
     handleSpeedChange,
     selectedSpeed,
-    selectedWall,
+    selectedObject,
     handleClickDetourButton,
     handleClickClearPathButton,
     handleClickClearBoardButton,
     handleClickRunButton,
-    handleToggleWallWeightButton,
+    handleChangeSelectedObject,
   } = props;
   const theme = useTheme();
   const container =
@@ -109,9 +110,9 @@ const Sidebar = (props) => {
         <Button
           className={classes.button}
           color="primary"
-          onClick={handleToggleWallWeightButton}
+          onClick={handleChangeSelectedObject}
         >
-          {selectedWall ? "Weight" : "Wall"}
+          {selectedObject === GRID_OBJECTS.WEIGHT ? "Weight" : "Wall"}
         </Button>
       </Grid>
       <Grid>

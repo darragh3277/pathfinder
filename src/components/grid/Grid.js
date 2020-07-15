@@ -24,7 +24,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const gridUpdated = (prevProps, nextProps) => {
-  return prevProps.grid === nextProps.grid;
+  return (
+    prevProps.grid === nextProps.grid &&
+    prevProps.selectedObject === nextProps.selectedObject
+  );
 };
 
 const Grid = memo((props) => {
@@ -39,8 +42,8 @@ const Grid = memo((props) => {
     nodeDimension,
     handleDragStart,
     handleDrop,
+    selectedObject,
   } = props;
-  console.log("rerender", props);
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />

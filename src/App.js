@@ -21,7 +21,7 @@ function Pathfinder() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("");
   const [selectedGrid, setSelectedGrid] = useState("");
   const [selectedSpeed, setSelectedSpeed] = useState("Fast");
-  const [selectedWall, setSelectedWall] = useState(true);
+  const [selectedObject, setSelectedObject] = useState(GRID_OBJECTS.WALL);
   const [grid, setGrid] = useState([]);
   const gridRef = useRef();
   let mousePressed = false;
@@ -42,8 +42,12 @@ function Pathfinder() {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleToggleWallWeightButton = () => {
-    setSelectedWall(!selectedWall);
+  const handleChangeSelectedObject = () => {
+    const newObject =
+      selectedObject === GRID_OBJECTS.WALL
+        ? GRID_OBJECTS.WEIGHT
+        : GRID_OBJECTS.WALL;
+    setSelectedObject(newObject);
   };
 
   const handleClickDetourButton = (e) => {
@@ -71,16 +75,17 @@ function Pathfinder() {
     grid[row][col] = parseInt(e.dataTransfer.getData("object"));
     grid[e.dataTransfer.getData("row")][e.dataTransfer.getData("col")] =
       GRID_OBJECTS.EMPTY;
-    e.target.parentElement.classList.remove("makeStyles-wall-31");
+    e.target.parentElement.classList.remove("wall");
+    e.target.parentElement.classList.remove("weight");
     setGrid([...grid]);
   };
 
   const handleClickClearBoardButton = () => {
     //Another hacky solution to get react to play nice
     //with altering the DOM directly
-    const walls = gridRef.current.querySelectorAll(".makeStyles-wall-31");
+    const walls = gridRef.current.querySelectorAll("wall");
     walls.forEach((wall) => {
-      wall.classList.remove("makeStyles-wall-31");
+      wall.classList.remove("wall");
     });
     setGrid(buildGrid());
   };
@@ -90,14 +95,22 @@ function Pathfinder() {
   };
 
   const handleMouseDown = (col, row, object, ref) => {
-    if (object !== GRID_OBJECTS.EMPTY && object !== GRID_OBJECTS.WALL)
+    if (
+      object !== GRID_OBJECTS.EMPTY &&
+      object !== GRID_OBJECTS.WALL &&
+      object !== GRID_OBJECTS.WEIGHT
+    )
       return false;
     mousePressed = true;
     updateGrid(col, row, ref);
   };
 
   const handleMouseEnter = (col, row, object, ref) => {
-    if (object !== GRID_OBJECTS.EMPTY && object !== GRID_OBJECTS.WALL)
+    if (
+      object !== GRID_OBJECTS.EMPTY &&
+      object !== GRID_OBJECTS.WALL &&
+      object !== GRID_OBJECTS.WEIGHT
+    )
       return false;
     if (mousePressed === false) return;
     updateGrid(col, row, ref);
@@ -105,13 +118,17 @@ function Pathfinder() {
 
   const handleMouseUp = () => {
     mousePressed = false;
-    setGrid([...grid]);
+    //delay to prevent animation stuttering
+    //from state update
+    setTimeout(setGrid([...grid]), 1000);
   };
 
   const handleMouseLeave = () => {
     if (mousePressed === false) return;
     mousePressed = false;
-    setGrid([...grid]);
+    //delay to prevent animation stuttering
+    //from state update
+    setTimeout(setGrid([...grid]), 1000);
   };
 
   const updateGrid = (col, row, ref) => {
@@ -119,12 +136,46 @@ function Pathfinder() {
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
     //This should not be replicated
-    if (grid[row][col] === GRID_OBJECTS.WALL) {
-      ref.current.classList.remove("makeStyles-wall-31");
-      grid[row][col] = GRID_OBJECTS.EMPTY;
-    } else if (grid[row][col] === GRID_OBJECTS.EMPTY) {
-      ref.current.classList.add("makeStyles-wall-31");
-      grid[row][col] = GRID_OBJECTS.WALL;
+    console.log(selectedObject);
+
+    if (selectedObject === GRID_OBJECTS.WALL) {
+      console.log("placing wall t", selectedObject);
+      switch (grid[row][col]) {
+        case GRID_OBJECTS.EMPTY:
+          ref.current.classList.add("wall");
+          grid[row][col] = GRID_OBJECTS.WALL;
+          break;
+        case GRID_OBJECTS.WALL:
+          ref.current.classList.remove("wall");
+          grid[row][col] = GRID_OBJECTS.EMPTY;
+          break;
+        case GRID_OBJECTS.WEIGHT:
+          ref.current.classList.remove("weight");
+          ref.current.classList.add("wall");
+          grid[row][col] = GRID_OBJECTS.WALL;
+          break;
+        default:
+          return;
+      }
+    } else {
+      console.log("placing weight f", selectedObject);
+      switch (grid[row][col]) {
+        case GRID_OBJECTS.EMPTY:
+          ref.current.classList.add("weight");
+          grid[row][col] = GRID_OBJECTS.WEIGHT;
+          break;
+        case GRID_OBJECTS.WEIGHT:
+          ref.current.classList.remove("weight");
+          grid[row][col] = GRID_OBJECTS.EMPTY;
+          break;
+        case GRID_OBJECTS.WALL:
+          ref.current.classList.remove("wall");
+          ref.current.classList.add("weight");
+          grid[row][col] = GRID_OBJECTS.WEIGHT;
+          break;
+        default:
+          return;
+      }
     }
   };
 
@@ -166,8 +217,8 @@ function Pathfinder() {
         selectedSpeed={selectedSpeed}
         handleGridChange={handleGridChange}
         selectedGrid={selectedGrid}
-        selectedWall={selectedWall}
-        handleToggleWallWeightButton={handleToggleWallWeightButton}
+        selectedObject={selectedObject}
+        handleChangeSelectedObject={handleChangeSelectedObject}
         handleClickDetourButton={handleClickDetourButton}
         handleClickClearPathButton={handleClickClearPathButton}
         handleClickClearBoardButton={handleClickClearBoardButton}
@@ -183,6 +234,7 @@ function Pathfinder() {
         handleMouseLeave={handleMouseLeave}
         handleDragStart={handleDragStart}
         handleDrop={handleDrop}
+        selectedObject={selectedObject}
       />
     </div>
   );

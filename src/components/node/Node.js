@@ -1,34 +1,12 @@
 import React, { useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import GridObject from "./GridObject";
+import "./Node.css";
 
 const useStyles = makeStyles(() => ({
   node: {
     border: "1px solid black",
     padding: "0",
-  },
-  wall: {
-    animationName: "$wallAnimation",
-    animationDuration: "0.3s",
-    animationTimingFunction: "ease-out",
-    animationDirection: "alternate",
-    animationIterationCount: "1",
-    animationFillMode: "forwards",
-    animationPlayState: "running",
-  },
-  "@keyframes wallAnimation": {
-    "0%": {
-      transform: "scale(0.3)",
-      backgroundColor: "rgb(63, 81, 181)",
-    },
-    "50%": {
-      transform: "scale(1.2)",
-      backgroundColor: "rgb(63, 81, 181)",
-    },
-    "100%": {
-      transform: "scale(1.0)",
-      backgroundColor: "rgb(63, 81, 181)",
-    },
   },
 }));
 
