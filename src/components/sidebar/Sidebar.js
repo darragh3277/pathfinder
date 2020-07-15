@@ -70,11 +70,12 @@ const Sidebar = (props) => {
     selectedGrid,
     handleSpeedChange,
     selectedSpeed,
-    handleClickWeightButton,
+    selectedWall,
     handleClickDetourButton,
     handleClickClearPathButton,
     handleClickClearBoardButton,
     handleClickRunButton,
+    handleToggleWallWeightButton,
   } = props;
   const theme = useTheme();
   const container =
@@ -108,9 +109,9 @@ const Sidebar = (props) => {
         <Button
           className={classes.button}
           color="primary"
-          onClick={handleClickWeightButton}
+          onClick={handleToggleWallWeightButton}
         >
-          Weight
+          {selectedWall ? "Weight" : "Wall"}
         </Button>
       </Grid>
       <Grid>

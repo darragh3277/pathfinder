@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Node from "../node/Node";
@@ -23,7 +23,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Grid = (props) => {
+const gridUpdated = (prevProps, nextProps) => {
+  return prevProps.grid === nextProps.grid;
+};
+
+const Grid = memo((props) => {
   const classes = useStyles();
   const {
     gridRef,
@@ -36,7 +40,7 @@ const Grid = (props) => {
     handleDragStart,
     handleDrop,
   } = props;
-
+  console.log("rerender", props);
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
@@ -73,6 +77,6 @@ const Grid = (props) => {
       </Container>
     </main>
   );
-};
+}, gridUpdated);
 
 export default Grid;

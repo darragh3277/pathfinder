@@ -21,6 +21,7 @@ function Pathfinder() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("");
   const [selectedGrid, setSelectedGrid] = useState("");
   const [selectedSpeed, setSelectedSpeed] = useState("Fast");
+  const [selectedWall, setSelectedWall] = useState(true);
   const [grid, setGrid] = useState([]);
   const gridRef = useRef();
   let mousePressed = false;
@@ -41,8 +42,8 @@ function Pathfinder() {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleClickWeightButton = (e) => {
-    //todo
+  const handleToggleWallWeightButton = () => {
+    setSelectedWall(!selectedWall);
   };
 
   const handleClickDetourButton = (e) => {
@@ -72,7 +73,6 @@ function Pathfinder() {
       GRID_OBJECTS.EMPTY;
     e.target.parentElement.classList.remove("makeStyles-wall-31");
     setGrid([...grid]);
-    console.log("drag end", col, row, e.target.classList);
   };
 
   const handleClickClearBoardButton = () => {
@@ -138,7 +138,6 @@ function Pathfinder() {
     const height = gridRef.current.clientHeight;
     const numRows = Math.floor(height / nodeDimension);
     const numCols = Math.floor(width / nodeDimension);
-    console.log(width, height, numCols, numRows);
     // return [[0]];
     let row = [];
     for (let i = 0; i < numCols; i++) {
@@ -167,7 +166,8 @@ function Pathfinder() {
         selectedSpeed={selectedSpeed}
         handleGridChange={handleGridChange}
         selectedGrid={selectedGrid}
-        handleClickWeightButton={handleClickWeightButton}
+        selectedWall={selectedWall}
+        handleToggleWallWeightButton={handleToggleWallWeightButton}
         handleClickDetourButton={handleClickDetourButton}
         handleClickClearPathButton={handleClickClearPathButton}
         handleClickClearBoardButton={handleClickClearBoardButton}
