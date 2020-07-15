@@ -15,7 +15,7 @@ const onDragOver = (e) => {
   return false;
 };
 
-function Node(props) {
+const Node = (props) => {
   const {
     row,
     col,
@@ -46,6 +46,6 @@ function Node(props) {
       />
     </td>
   );
-}
+};
 
 export default Node;

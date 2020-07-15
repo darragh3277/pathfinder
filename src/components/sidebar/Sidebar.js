@@ -5,36 +5,15 @@ import Divider from "@material-ui/core/Divider";
 import Dropdown from "./dropdown/Dropdown";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Button, Grid } from "@material-ui/core";
-import { GRID_OBJECTS, DETOUR_STATUS } from "../../constants/GridObjects";
+import {
+  GRID_OBJECTS,
+  algorithms,
+  grids,
+  speeds,
+} from "../../constants/Constants";
 // import Dijkstra from "../../algorithms/Dijkstra";
 
 const drawerWidth = 240;
-
-const algorithms = [
-  { id: 1, name: "Dijkstra" },
-  { id: 2, name: "A*" },
-  { id: 3, name: "Greedy Best-first Search" },
-  { id: 4, name: "Swarm Algorithm" },
-  { id: 5, name: "Convergent Swarm Algorithm" },
-  { id: 6, name: "Bidirectional Swarm Algorithm" },
-  { id: 7, name: "Breadth-first Search" },
-  { id: 8, name: "Depth-first Search" },
-];
-
-const grids = [
-  { id: 1, name: "Recursive Division" },
-  { id: 2, name: "Recursive Division (vertical skew" },
-  { id: 3, name: "Recursive Division (horizontal skew" },
-  { id: 4, name: "Basic Random Maze" },
-  { id: 5, name: "Basic Weight Maze" },
-  { id: 6, name: "Simple Stair Pattern" },
-];
-
-const speeds = [
-  { id: 1, name: "Fast", speed: 10 },
-  { id: 2, name: "Medium", speed: 100 },
-  { id: 3, name: "Slow", speed: 500 },
-];
 
 const useStyles = makeStyles((theme) => ({
   drawer: {

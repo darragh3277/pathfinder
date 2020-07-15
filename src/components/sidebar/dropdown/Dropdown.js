@@ -18,7 +18,8 @@ const buildOptions = (options) =>
     );
   });
 
-export default ({ value, handleChange, options, label }) => {
+export default (props) => {
+  const { value, handleChange, options, label } = props;
   const classes = useStyles();
   return (
     <FormControl className={classes.formControl}>

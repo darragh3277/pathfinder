@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { GRID_OBJECTS } from "../../constants/GridObjects";
+import { GRID_OBJECTS } from "../../constants/Constants";
 import RoomIcon from "@material-ui/icons/Room";
 import NearMeIcon from "@material-ui/icons/NearMe";
 import AddLocationIcon from "@material-ui/icons/AddLocation";

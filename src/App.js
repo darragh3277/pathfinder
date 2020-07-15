@@ -4,7 +4,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Grid from "./components/grid/Grid";
 import Header from "./components/header/Header";
 import { makeStyles } from "@material-ui/core/styles";
-import { GRID_OBJECTS, DETOUR_STATUS } from "./constants/GridObjects";
+import { GRID_OBJECTS } from "./constants/Constants";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -18,8 +18,8 @@ const nodeDimension = 25; //size of each block
 function Pathfinder() {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState("");
-  const [selectedGrid, setSelectedGrid] = useState("");
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState("Dijkstra");
+  const [selectedGrid, setSelectedGrid] = useState("Empty");
   const [selectedSpeed, setSelectedSpeed] = useState("Fast");
   const [selectedObject, setSelectedObject] = useState(GRID_OBJECTS.WALL);
   const [detourAdded, setDetourAdded] = useState(false);
@@ -147,17 +147,13 @@ function Pathfinder() {
 
   const handleMouseUp = () => {
     mousePressed = false;
-    //delay to prevent animation stuttering
-    //from state update
-    setTimeout(setGrid([...grid]), 1000);
+    setGrid([...grid]);
   };
 
   const handleMouseLeave = () => {
     if (mousePressed === false) return;
     mousePressed = false;
-    //delay to prevent animation stuttering
-    //from state update
-    setTimeout(setGrid([...grid]), 1000);
+    setGrid([...grid]);
   };
 
   const updateGrid = (col, row, ref) => {
@@ -202,11 +198,11 @@ function Pathfinder() {
           return;
       }
     } else if (selectedObject === GRID_OBJECTS.DETOUR) {
-      setDetourAdded(true);
-      setSelectedObject(GRID_OBJECTS.WALL);
       ref.current.classList.remove("weight");
       ref.current.classList.remove("wall");
       grid[row][col] = GRID_OBJECTS.DETOUR;
+      setDetourAdded(true);
+      setSelectedObject(GRID_OBJECTS.WALL);
     }
   };
 
