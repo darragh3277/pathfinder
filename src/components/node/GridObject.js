@@ -1,13 +1,15 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { GRID_OBJECTS } from "../../constants/GridObjects";
-import FlagIcon from "@material-ui/icons/Flag";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import RoomIcon from "@material-ui/icons/Room";
+import NearMeIcon from "@material-ui/icons/NearMe";
+import AddLocationIcon from "@material-ui/icons/AddLocation";
 
 const useStyles = makeStyles(() => ({
   object: {
     width: "100%",
     height: "auto",
+    color: "#f44336",
   },
   span: {
     overflow: "hidden",
@@ -27,7 +29,7 @@ function GridObject(props) {
           onDragStart={(e) => handleDragStart(col, row, e)}
           className={classes.span}
         >
-          <PlayArrowIcon className={classes.object} />
+          <NearMeIcon className={classes.object} />
         </div>
       );
     case GRID_OBJECTS.END:
@@ -37,7 +39,17 @@ function GridObject(props) {
           onDragStart={(e) => handleDragStart(col, row, e)}
           className={classes.span}
         >
-          <FlagIcon className={classes.object} />
+          <RoomIcon className={classes.object} />
+        </div>
+      );
+    case GRID_OBJECTS.DETOUR:
+      return (
+        <div
+          draggable="true"
+          onDragStart={(e) => handleDragStart(col, row, e)}
+          className={classes.span}
+        >
+          <AddLocationIcon className={classes.object} />
         </div>
       );
     default:

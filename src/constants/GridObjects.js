@@ -6,3 +6,9 @@ export const GRID_OBJECTS = {
   DETOUR: 4,
   WEIGHT: 5,
 };
+
+export const DETOUR_STATUS = {
+  NONE: 0,
+  SELECTED: 1,
+  ON_GRID: 2,
+};

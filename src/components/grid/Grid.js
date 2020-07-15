@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
 const gridUpdated = (prevProps, nextProps) => {
   return (
     prevProps.grid === nextProps.grid &&
-    prevProps.selectedObject === nextProps.selectedObject
+    prevProps.selectedObject === nextProps.selectedObject &&
+    prevProps.detour === nextProps.detour
   );
 };
 
@@ -42,7 +43,6 @@ const Grid = memo((props) => {
     nodeDimension,
     handleDragStart,
     handleDrop,
-    selectedObject,
   } = props;
   return (
     <main className={classes.content}>

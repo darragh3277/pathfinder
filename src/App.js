@@ -4,7 +4,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Grid from "./components/grid/Grid";
 import Header from "./components/header/Header";
 import { makeStyles } from "@material-ui/core/styles";
-import { GRID_OBJECTS } from "./constants/GridObjects";
+import { GRID_OBJECTS, DETOUR_STATUS } from "./constants/GridObjects";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -22,6 +22,7 @@ function Pathfinder() {
   const [selectedGrid, setSelectedGrid] = useState("");
   const [selectedSpeed, setSelectedSpeed] = useState("Fast");
   const [selectedObject, setSelectedObject] = useState(GRID_OBJECTS.WALL);
+  const [detourAdded, setDetourAdded] = useState(false);
   const [grid, setGrid] = useState([]);
   const gridRef = useRef();
   let mousePressed = false;
@@ -51,7 +52,17 @@ function Pathfinder() {
   };
 
   const handleClickDetourButton = (e) => {
-    //todo
+    if (!detourAdded) {
+      setSelectedObject(GRID_OBJECTS.DETOUR);
+    } else {
+      const newGrid = grid.map((rows) => {
+        return rows.map((object) => {
+          return object === GRID_OBJECTS.DETOUR ? GRID_OBJECTS.EMPTY : object;
+        });
+      });
+      setDetourAdded(false);
+      setGrid(newGrid);
+    }
   };
 
   const handleClickClearPathButton = (e) => {
@@ -65,11 +76,16 @@ function Pathfinder() {
   };
 
   const handleDrop = (col, row, e) => {
-    //todo
     e.preventDefault();
     if (
       grid[row][col] === GRID_OBJECTS.START ||
       grid[row][col] === GRID_OBJECTS.END
+    )
+      return;
+    if (
+      e.dataTransfer.getData("object") === "" ||
+      e.dataTransfer.getData("row") === "" ||
+      e.dataTransfer.getData("col") === ""
     )
       return;
     grid[row][col] = parseInt(e.dataTransfer.getData("object"));
@@ -83,9 +99,13 @@ function Pathfinder() {
   const handleClickClearBoardButton = () => {
     //Another hacky solution to get react to play nice
     //with altering the DOM directly
-    const walls = gridRef.current.querySelectorAll("wall");
+    const walls = gridRef.current.querySelectorAll(".wall");
     walls.forEach((wall) => {
       wall.classList.remove("wall");
+    });
+    const weights = gridRef.current.querySelectorAll(".weight");
+    weights.forEach((weight) => {
+      weight.classList.remove("weight");
     });
     setGrid(buildGrid());
   };
@@ -136,10 +156,7 @@ function Pathfinder() {
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
     //This should not be replicated
-    console.log(selectedObject);
-
     if (selectedObject === GRID_OBJECTS.WALL) {
-      console.log("placing wall t", selectedObject);
       switch (grid[row][col]) {
         case GRID_OBJECTS.EMPTY:
           ref.current.classList.add("wall");
@@ -157,8 +174,7 @@ function Pathfinder() {
         default:
           return;
       }
-    } else {
-      console.log("placing weight f", selectedObject);
+    } else if (selectedObject === GRID_OBJECTS.WEIGHT) {
       switch (grid[row][col]) {
         case GRID_OBJECTS.EMPTY:
           ref.current.classList.add("weight");
@@ -176,6 +192,12 @@ function Pathfinder() {
         default:
           return;
       }
+    } else if (selectedObject === GRID_OBJECTS.DETOUR) {
+      setDetourAdded(true);
+      setSelectedObject(GRID_OBJECTS.WALL);
+      ref.current.classList.remove("weight");
+      ref.current.classList.remove("wall");
+      grid[row][col] = GRID_OBJECTS.DETOUR;
     }
   };
 
@@ -218,6 +240,7 @@ function Pathfinder() {
         handleGridChange={handleGridChange}
         selectedGrid={selectedGrid}
         selectedObject={selectedObject}
+        detourAdded={detourAdded}
         handleChangeSelectedObject={handleChangeSelectedObject}
         handleClickDetourButton={handleClickDetourButton}
         handleClickClearPathButton={handleClickClearPathButton}
