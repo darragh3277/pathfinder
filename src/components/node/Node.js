@@ -37,6 +37,8 @@ const Node = (props) => {
       onMouseEnter={() => handleMouseEnter(col, row, node, nodeRef)}
       onDrop={(e) => handleDrop(col, row, e)}
       onDragOver={onDragOver}
+      data-col={col}
+      data-row={row}
     >
       <GridObject
         object={node}

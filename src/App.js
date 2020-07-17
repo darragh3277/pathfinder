@@ -5,6 +5,7 @@ import Grid from "./components/grid/Grid";
 import Header from "./components/header/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import { GRID_OBJECTS } from "./constants/Constants";
+import RecursiveDivision from "./algorithms/grids/RecursiveDivision";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -28,11 +29,31 @@ function Pathfinder() {
   let mousePressed = false;
 
   const handleAlgorithmChange = (e) => {
-    setSelectedAlgorithm(e.target.value);
+    const algorithmName = e.target.value;
+    setSelectedAlgorithm(algorithmName);
   };
 
   const handleGridChange = (e) => {
-    setSelectedGrid(e.target.value);
+    resetGrid();
+
+    const gridType = e.target.value;
+    setSelectedGrid(gridType);
+
+    const gridAlgorithm = new RecursiveDivision(grid);
+    setGrid(gridAlgorithm.generate());
+    const steps = gridAlgorithm.getSteps();
+
+    const update = setInterval(() => {
+      const step = steps.shift();
+      gridRef.current
+        .querySelectorAll(
+          'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+        )[0]
+        .classList.add("wall");
+      if (steps.length === 0) {
+        clearInterval(update);
+      }
+    }, 50);
   };
 
   const handleSpeedChange = (e) => {
@@ -104,7 +125,7 @@ function Pathfinder() {
     setGrid([...grid]);
   };
 
-  const handleClickClearBoardButton = () => {
+  const resetGrid = () => {
     //Another hacky solution to get react to play nice
     //with altering the DOM directly
     const walls = gridRef.current.querySelectorAll(".wall");
@@ -117,6 +138,10 @@ function Pathfinder() {
     });
     setGrid(buildGrid());
     setDetourAdded(false);
+  };
+
+  const handleClickClearBoardButton = () => {
+    this.resetGrid();
   };
 
   const handleClickRunButton = (e) => {
