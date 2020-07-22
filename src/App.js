@@ -55,7 +55,7 @@ function Pathfinder() {
       if (steps.length === 0) {
         clearInterval(update);
       }
-    }, 10);
+    }, 100);
   };
 
   const handleSpeedChange = (e) => {
