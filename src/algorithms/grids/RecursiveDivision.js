@@ -1,4 +1,6 @@
 import { GRID_OBJECTS } from "../../constants/Constants";
+import BaseGridGenerator from "./BaseGridGenerator";
+
 /*
 Recursive Divsion
 1. Fill grid borders with walls
@@ -7,114 +9,71 @@ Recursive Divsion
 3. Choose random point in wall for a gap
 4. Repeat with bisected grids until grids are too small
 */
-class RecursiveDivision {
+
+class RecursiveDivision extends BaseGridGenerator {
   constructor(grid) {
-    this.grid = JSON.parse(JSON.stringify(grid));
-    this.steps = [];
+    super(grid);
+    this.init();
   }
-  generate = () => {
-    const height = this.grid.length - 1;
-    const width = this.grid[0].length - 1;
-    console.log(width, height);
-    this.addBorders(width, height);
-    this.division(1, width - 1, 1, height - 1, true, null);
-    return this.grid;
-  };
 
-  addBorders = (width, height) => {
-    for (let i = 0; i <= width; i++) {
-      this.logSteps(i, 0, GRID_OBJECTS.WALL);
-      this.logSteps(width - i, height, GRID_OBJECTS.WALL);
-    }
-
-    for (let i = 0; i <= height; i++) {
-      this.logSteps(0, height - i, GRID_OBJECTS.WALL);
-      this.logSteps(width, i, GRID_OBJECTS.WALL);
-    }
-  };
-
-  logSteps = (col, row, object) => {
-    this.steps.push({ col: col, row: row, object: object });
-  };
-
-  getSteps = () => {
-    return this.steps;
-  };
-
-  division = (xStart, xEnd, yStart, yEnd, horizontal, prevGap) => {
+  generate = (xStart, xEnd, yStart, yEnd, horizontal) => {
     if (horizontal) {
       if (xEnd - xStart < 2) return;
-      const divPoint = this.getRandomNumberInRange(
-        xStart + 1,
-        xEnd - 1,
-        prevGap
-      );
+      const columns = this.getPossibleColumns(xStart, xEnd, yStart, yEnd);
+      if (columns.length === 0) return;
+      const divPoint =
+        columns[this.getRandomNumberInRange(0, columns.length - 1)];
       const gap = this.getRandomNumberInRange(yStart, yEnd);
       for (let i = yStart; i <= yEnd; i++) {
-        if (this.grid[i][divPoint] !== GRID_OBJECTS.EMPTY || i === gap)
+        if (this.grid[i][divPoint] !== GRID_OBJECTS.EMPTY || gap === i)
           continue;
         this.grid[i][divPoint] = GRID_OBJECTS.WALL;
         this.logSteps(divPoint, i, GRID_OBJECTS.WALL);
       }
-      this.division(xStart, divPoint - 1, yStart, yEnd, !horizontal, gap); //left grid
-      this.division(divPoint + 1, xEnd, yStart, yEnd, !horizontal, gap); //right grid
+      this.generate(xStart, divPoint - 1, yStart, yEnd, !horizontal); //left grid
+      this.generate(divPoint + 1, xEnd, yStart, yEnd, !horizontal); //right grid
     } else {
       if (yEnd - yStart < 2) return;
-      const divPoint = this.getRandomNumberInRange(
-        yStart + 1,
-        yEnd - 1,
-        prevGap
-      );
+      const rows = this.getPossibleRows(xStart, xEnd, yStart, yEnd);
+      if (rows.length === 0) return;
+      const divPoint = rows[this.getRandomNumberInRange(0, rows.length - 1)];
       const gap = this.getRandomNumberInRange(xStart, xEnd);
       for (let i = xStart; i <= xEnd; i++) {
-        if (this.grid[divPoint][i] !== GRID_OBJECTS.EMPTY || i === gap)
+        if (this.grid[divPoint][i] !== GRID_OBJECTS.EMPTY || gap === i)
           continue;
         this.grid[divPoint][i] = GRID_OBJECTS.WALL;
         this.logSteps(i, divPoint, GRID_OBJECTS.WALL);
       }
-      this.division(xStart, xEnd, yStart, divPoint - 1, !horizontal, gap); //top grid
-      this.division(xStart, xEnd, divPoint + 1, yEnd, !horizontal, gap); //bottom grid
+      this.generate(xStart, xEnd, yStart, divPoint - 1, !horizontal); //top grid
+      this.generate(xStart, xEnd, divPoint + 1, yEnd, !horizontal); //bottom grid
     }
   };
 
-  getRandomNumberInRange = (start, end, exclude) => {
-    if (exclude === start) return end;
-    if (exclude === end) return start;
-    let point = Math.floor(Math.random() * (end - start) + start);
-    while (point === exclude) {
-      console.log(start, end, exclude);
-      point = Math.floor(Math.random() * (end - start) + start);
+  getPossibleColumns = (xStart, xEnd, yStart, yEnd) => {
+    const columns = [];
+    for (let i = xStart + 1; i <= xEnd - 1; i++) {
+      if (
+        this.grid[yStart - 1][i] === GRID_OBJECTS.WALL &&
+        this.grid[yEnd + 1][i] === GRID_OBJECTS.WALL
+      ) {
+        columns.push(i);
+      }
     }
-    return point;
+    return columns;
   };
 
-  // division = (xStart, xEnd, yStart, yEnd, horizontal) => {
-  //   if (xEnd - xStart < 2 || yEnd - yStart < 2) return;
-
-  //   if (horizontal) {
-  //     const midPoint = Math.floor((xEnd - xStart) / 2) + xStart;
-  //     const gap = Math.floor(Math.random() * (yEnd - yStart) + yStart);
-  //     for (let i = yStart; i <= yEnd; i++) {
-  //       if (this.grid[i][midPoint] !== GRID_OBJECTS.EMPTY || i === gap)
-  //         continue;
-  //       this.grid[i][midPoint] = GRID_OBJECTS.WALL;
-  //       this.logSteps(midPoint, i, GRID_OBJECTS.WALL);
-  //     }
-  //     this.division(xStart, midPoint, yStart, yEnd, !horizontal); //left grid
-  //     this.division(midPoint + 1, xEnd, yStart, yEnd, !horizontal); //right grid
-  //   } else {
-  //     const midPoint = Math.floor((yEnd - yStart) / 2) + yStart;
-  //     const gap = Math.floor(Math.random() * (xEnd - xStart) + xStart);
-  //     for (let i = xStart; i <= xEnd; i++) {
-  //       if (this.grid[midPoint][i] !== GRID_OBJECTS.EMPTY || i === gap)
-  //         continue;
-  //       this.grid[midPoint][i] = GRID_OBJECTS.WALL;
-  //       this.logSteps(i, midPoint, GRID_OBJECTS.WALL);
-  //     }
-  //     this.division(xStart, xEnd, yStart, midPoint, !horizontal); //top grid
-  //     this.division(xStart, xEnd, midPoint + 1, yEnd, !horizontal); //bottom grid
-  //   }
-  // };
+  getPossibleRows = (xStart, xEnd, yStart, yEnd) => {
+    const rows = [];
+    for (let i = yStart + 1; i <= yEnd - 1; i++) {
+      if (
+        this.grid[i][xStart - 1] === GRID_OBJECTS.WALL &&
+        this.grid[i][xEnd + 1] === GRID_OBJECTS.WALL
+      ) {
+        rows.push(i);
+      }
+    }
+    return rows;
+  };
 }
 
 export default RecursiveDivision;

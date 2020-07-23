@@ -38,12 +38,9 @@ function Pathfinder() {
 
     const gridType = e.target.value;
     setSelectedGrid(gridType);
-    console.log(grid);
 
     const gridAlgorithm = new RecursiveDivision(grid);
-    setGrid(gridAlgorithm.generate());
     const steps = gridAlgorithm.getSteps();
-    console.log(steps);
 
     const update = setInterval(() => {
       const step = steps.shift();
@@ -55,7 +52,8 @@ function Pathfinder() {
       if (steps.length === 0) {
         clearInterval(update);
       }
-    }, 100);
+    }, 10);
+    setGrid(gridAlgorithm.getGrid());
   };
 
   const handleSpeedChange = (e) => {
