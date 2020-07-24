@@ -1,5 +1,7 @@
 import BaseGridGenerator from "./BaseGridGenerator";
 import { GRID_OBJECTS } from "../../constants/Constants";
+import { getObjectCoords } from "../../utils/Helpers";
+
 /*
 Stairs pattern
 Start in bottom left corner
@@ -11,7 +13,7 @@ in order to provide a path to end point
 class StairsPattern extends BaseGridGenerator {
   constructor(grid) {
     super(grid);
-    this.startCoords = this.getStartCoords();
+    this.startCoords = getObjectCoords(grid, GRID_OBJECTS.START);
     this.generate(0, this.gridHeight, true);
   }
 

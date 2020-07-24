@@ -1,9 +1,14 @@
-class Dijkstra {
+import BasePathfinder from "./BasePathfinder";
+
+class Dijkstra extends BasePathfinder {
   constructor(grid) {
-    this.grid = grid;
+    super(grid);
+    this.solve();
   }
 
-  solve = () => {};
+  solve = () => {
+    console.log("solving");
+  };
 }
 
 export default Dijkstra;

@@ -10,6 +10,7 @@ import RecursiveDivisionVertical from "./algorithms/grids/RecursiveDivisionVerti
 import RecursiveDivisionHorizontal from "./algorithms/grids/RecursiveDivisionHorizontal";
 import EmptyGrid from "./algorithms/grids/EmptyGrid";
 import StairsPattern from "./algorithms/grids/StairsPattern";
+import Dijkstra from "./algorithms/pathfinders/Dijkstra";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -73,7 +74,7 @@ function Pathfinder() {
           if (steps.length === 0) {
             clearInterval(update);
           }
-        }, 1);
+        }, 10);
         setGrid(gridAlgorithm.getGrid());
       }
     } else {
@@ -170,8 +171,8 @@ function Pathfinder() {
     setSelectedGrid("Empty");
   };
 
-  const handleClickRunButton = (e) => {
-    //todo
+  const handleClickRunButton = () => {
+    const pathfinder = new Dijkstra(grid);
   };
 
   const handleMouseDown = (col, row, object, ref) => {
