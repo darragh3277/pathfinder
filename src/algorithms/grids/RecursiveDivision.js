@@ -1,5 +1,6 @@
-import { GRID_OBJECTS } from "../../constants/Constants";
 import BaseGridGenerator from "./BaseGridGenerator";
+import { GRID_OBJECTS } from "../../constants/Constants";
+import { getRandomNumberInRange } from "../../utils/Helpers";
 
 /*
 Recursive Divsion
@@ -32,9 +33,8 @@ class RecursiveDivision extends BaseGridGenerator {
     if (xEnd - xStart < 2) return;
     const columns = this.getPossibleColumns(xStart, xEnd, yStart, yEnd);
     if (columns.length === 0) return;
-    const divPoint =
-      columns[this.getRandomNumberInRange(0, columns.length - 1)];
-    const gap = this.getRandomNumberInRange(yStart, yEnd);
+    const divPoint = columns[getRandomNumberInRange(0, columns.length - 1)];
+    const gap = getRandomNumberInRange(yStart, yEnd);
     for (let i = yStart; i <= yEnd; i++) {
       if (this.grid[i][divPoint] !== GRID_OBJECTS.EMPTY || gap === i) continue;
       this.grid[i][divPoint] = GRID_OBJECTS.WALL;
@@ -49,8 +49,8 @@ class RecursiveDivision extends BaseGridGenerator {
     if (yEnd - yStart < 2) return;
     const rows = this.getPossibleRows(xStart, xEnd, yStart, yEnd);
     if (rows.length === 0) return;
-    const divPoint = rows[this.getRandomNumberInRange(0, rows.length - 1)];
-    const gap = this.getRandomNumberInRange(xStart, xEnd);
+    const divPoint = rows[getRandomNumberInRange(0, rows.length - 1)];
+    const gap = getRandomNumberInRange(xStart, xEnd);
     for (let i = xStart; i <= xEnd; i++) {
       if (this.grid[divPoint][i] !== GRID_OBJECTS.EMPTY || gap === i) continue;
       this.grid[divPoint][i] = GRID_OBJECTS.WALL;

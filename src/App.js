@@ -52,7 +52,7 @@ function Pathfinder() {
       if (steps.length === 0) {
         clearInterval(update);
       }
-    }, 10);
+    }, 5);
     setGrid(gridAlgorithm.getGrid());
   };
 

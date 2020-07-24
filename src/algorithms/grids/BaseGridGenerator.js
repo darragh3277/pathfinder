@@ -1,8 +1,9 @@
 import { GRID_OBJECTS } from "../../constants/Constants";
+import { deepCopyObject } from "../../utils/Helpers";
 
 class BaseGridGenerator {
   constructor(grid) {
-    this.grid = JSON.parse(JSON.stringify(grid));
+    this.grid = deepCopyObject(grid);
     this.steps = [];
     this.gridHeight = this.grid.length - 1;
     this.gridWidth = this.grid[0].length - 1;
@@ -39,9 +40,9 @@ class BaseGridGenerator {
     }
   };
 
-  getRandomNumberInRange = (start, end) => {
-    return Math.floor(Math.random() * (end - start) + start);
-  };
+  //   getRandomNumberInRange = (start, end) => {
+  //     return Math.floor(Math.random() * (end - start) + start);
+  //   };
 }
 
 export default BaseGridGenerator;
