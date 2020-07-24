@@ -6,6 +6,7 @@ import Header from "./components/header/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import { GRID_OBJECTS } from "./constants/Constants";
 import RecursiveDivision from "./algorithms/grids/RecursiveDivision";
+import EmptyGrid from "./algorithms/grids/EmptyGrid";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -33,11 +34,15 @@ function Pathfinder() {
     setSelectedAlgorithm(algorithmName);
   };
 
-  const handleGridChange = (e) => {
-    resetGrid();
+  useEffect(() => {
+    console.log("grid updating");
+  }, [grid, selectedGrid]);
 
+  const handleGridChange = (e) => {
     const gridType = e.target.value;
     setSelectedGrid(gridType);
+
+    resetGrid();
 
     const gridAlgorithm = new RecursiveDivision(grid);
     const steps = gridAlgorithm.getSteps();
@@ -141,7 +146,7 @@ function Pathfinder() {
   };
 
   const handleClickClearBoardButton = () => {
-    this.resetGrid();
+    resetGrid();
   };
 
   const handleClickRunButton = (e) => {
@@ -236,24 +241,9 @@ function Pathfinder() {
   }, []); //onMount
 
   const buildGrid = () => {
-    const grid = [];
     const width = gridRef.current.clientWidth;
     const height = gridRef.current.clientHeight;
-    const numRows = Math.floor(height / nodeDimension);
-    const numCols = Math.floor(width / nodeDimension);
-    // return [[0]];
-    let row = [];
-    for (let i = 0; i < numCols; i++) {
-      row.push(GRID_OBJECTS.EMPTY);
-    }
-    for (let i = 0; i < numRows; i++) {
-      grid.push([...row]);
-    }
-    //set default start and end points
-    const verticalMidPoint = Math.floor(grid.length / 2);
-    grid[verticalMidPoint][Math.floor(row.length * 0.25)] = GRID_OBJECTS.START;
-    grid[verticalMidPoint][Math.floor(row.length * 0.75)] = GRID_OBJECTS.END;
-    return grid;
+    return new EmptyGrid(width, height, nodeDimension);
   };
 
   return (
