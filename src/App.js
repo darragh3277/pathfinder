@@ -6,6 +6,8 @@ import Header from "./components/header/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import { GRID_OBJECTS } from "./constants/Constants";
 import RecursiveDivision from "./algorithms/grids/RecursiveDivision";
+import RecursiveDivisionVertical from "./algorithms/grids/RecursiveDivisionVertical";
+import RecursiveDivisionHorizontal from "./algorithms/grids/RecursiveDivisionHorizontal";
 import EmptyGrid from "./algorithms/grids/EmptyGrid";
 import StairsPattern from "./algorithms/grids/StairsPattern";
 
@@ -45,6 +47,12 @@ function Pathfinder() {
       case "Recursive Division":
         gridAlgorithm = new RecursiveDivision(emptyGrid);
         break;
+      case "Vertical Recursive Division":
+        gridAlgorithm = new RecursiveDivisionVertical(emptyGrid);
+        break;
+      case "Horizontal Recursive Division":
+        gridAlgorithm = new RecursiveDivisionHorizontal(emptyGrid);
+        break;
       case "Simple Stair Pattern":
         gridAlgorithm = new StairsPattern(emptyGrid);
         break;
@@ -65,7 +73,7 @@ function Pathfinder() {
           if (steps.length === 0) {
             clearInterval(update);
           }
-        }, 5);
+        }, 1);
         setGrid(gridAlgorithm.getGrid());
       }
     } else {

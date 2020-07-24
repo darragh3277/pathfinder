@@ -23,8 +23,8 @@ export const algorithms = [
 export const grids = [
   { id: 1, name: "Empty" },
   { id: 2, name: "Recursive Division" },
-  { id: 3, name: "Recursive Division (vertical skew)" },
-  { id: 4, name: "Recursive Division (horizontal skew)" },
+  { id: 3, name: "Vertical Recursive Division" },
+  { id: 4, name: "Horizontal Recursive Division" },
   { id: 5, name: "Basic Random Maze" },
   { id: 6, name: "Basic Weight Maze" },
   { id: 7, name: "Simple Stair Pattern" },

@@ -8,7 +8,8 @@ Recursive Divsion
 2. Bisect the grid and draw wall (when choosing bisect point ensure
   you don't block any previous gaps)
 3. Choose random point in wall for a gap
-4. Repeat with bisected grids until grids are too small
+4. Repeat with bisected grids, altering direction of bisection
+until grids are too small
 */
 class RecursiveDivision extends BaseGridGenerator {
   constructor(grid) {
