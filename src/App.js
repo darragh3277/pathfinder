@@ -251,8 +251,7 @@ function Pathfinder() {
   const buildGrid = () => {
     const width = gridRef.current.clientWidth;
     const height = gridRef.current.clientHeight;
-    const gridAlgorithm = new EmptyGrid(width, height, nodeDimension);
-    return gridAlgorithm.getGrid();
+    return new EmptyGrid(width, height, nodeDimension);
   };
 
   return (

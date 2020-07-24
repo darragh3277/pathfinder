@@ -7,7 +7,7 @@ class EmptyGrid extends BaseGridGenerator {
     this.width = width;
     this.height = height;
     this.nodeDimension = nodeDimension;
-    this.generate();
+    return this.generate();
   }
 
   generate = () => {
@@ -25,7 +25,7 @@ class EmptyGrid extends BaseGridGenerator {
     const verticalMidPoint = Math.floor(grid.length / 2);
     grid[verticalMidPoint][Math.floor(row.length * 0.25)] = GRID_OBJECTS.START;
     grid[verticalMidPoint][Math.floor(row.length * 0.75)] = GRID_OBJECTS.END;
-    this.grid = grid;
+    return grid;
   };
 }
 
