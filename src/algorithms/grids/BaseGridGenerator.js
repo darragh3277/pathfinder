@@ -21,6 +21,16 @@ class BaseGridGenerator {
     return this.grid;
   };
 
+  getStartCoords = () => {
+    for (let i = 0; i <= this.gridHeight; i++) {
+      // console.log(this.grid[i]);
+      const col = this.grid[i].indexOf(GRID_OBJECTS.START);
+      if (col !== -1) {
+        return { col: col, row: i };
+      }
+    }
+  };
+
   //record each step for animation
   logSteps = (col, row, object) => {
     this.steps.push({ col: col, row: row, object: object });

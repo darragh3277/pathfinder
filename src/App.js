@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { GRID_OBJECTS } from "./constants/Constants";
 import RecursiveDivision from "./algorithms/grids/RecursiveDivision";
 import EmptyGrid from "./algorithms/grids/EmptyGrid";
+import StairsPattern from "./algorithms/grids/StairsPattern";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -44,25 +45,29 @@ function Pathfinder() {
       case "Recursive Division":
         gridAlgorithm = new RecursiveDivision(emptyGrid);
         break;
+      case "Simple Stair Pattern":
+        gridAlgorithm = new StairsPattern(emptyGrid);
+        break;
       default:
         break;
     }
 
     if (gridAlgorithm) {
       const steps = gridAlgorithm.getSteps();
-
-      const update = setInterval(() => {
-        const step = steps.shift();
-        gridRef.current
-          .querySelectorAll(
-            'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
-          )[0]
-          .classList.add("wall");
-        if (steps.length === 0) {
-          clearInterval(update);
-        }
-      }, 5);
-      setGrid(gridAlgorithm.getGrid());
+      if (steps.length > 0) {
+        const update = setInterval(() => {
+          const step = steps.shift();
+          gridRef.current
+            .querySelectorAll(
+              'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+            )[0]
+            .classList.add("wall");
+          if (steps.length === 0) {
+            clearInterval(update);
+          }
+        }, 5);
+        setGrid(gridAlgorithm.getGrid());
+      }
     } else {
       setGrid(emptyGrid);
     }
