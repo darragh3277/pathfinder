@@ -34,31 +34,38 @@ function Pathfinder() {
     setSelectedAlgorithm(algorithmName);
   };
 
-  useEffect(() => {
-    console.log("grid updating");
-  }, [grid, selectedGrid]);
-
   const handleGridChange = (e) => {
     const gridType = e.target.value;
     setSelectedGrid(gridType);
 
-    resetGrid();
+    let gridAlgorithm;
+    let emptyGrid = resetGrid();
+    switch (gridType) {
+      case "Recursive Division":
+        gridAlgorithm = new RecursiveDivision(emptyGrid);
+        break;
+      default:
+        break;
+    }
 
-    const gridAlgorithm = new RecursiveDivision(grid);
-    const steps = gridAlgorithm.getSteps();
+    if (gridAlgorithm) {
+      const steps = gridAlgorithm.getSteps();
 
-    const update = setInterval(() => {
-      const step = steps.shift();
-      gridRef.current
-        .querySelectorAll(
-          'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
-        )[0]
-        .classList.add("wall");
-      if (steps.length === 0) {
-        clearInterval(update);
-      }
-    }, 5);
-    setGrid(gridAlgorithm.getGrid());
+      const update = setInterval(() => {
+        const step = steps.shift();
+        gridRef.current
+          .querySelectorAll(
+            'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+          )[0]
+          .classList.add("wall");
+        if (steps.length === 0) {
+          clearInterval(update);
+        }
+      }, 5);
+      setGrid(gridAlgorithm.getGrid());
+    } else {
+      setGrid(emptyGrid);
+    }
   };
 
   const handleSpeedChange = (e) => {
@@ -141,12 +148,13 @@ function Pathfinder() {
     weights.forEach((weight) => {
       weight.classList.remove("weight");
     });
-    setGrid(buildGrid());
     setDetourAdded(false);
+    return buildGrid();
   };
 
   const handleClickClearBoardButton = () => {
-    resetGrid();
+    setGrid(resetGrid());
+    setSelectedGrid("Empty");
   };
 
   const handleClickRunButton = (e) => {
@@ -243,7 +251,8 @@ function Pathfinder() {
   const buildGrid = () => {
     const width = gridRef.current.clientWidth;
     const height = gridRef.current.clientHeight;
-    return new EmptyGrid(width, height, nodeDimension);
+    const gridAlgorithm = new EmptyGrid(width, height, nodeDimension);
+    return gridAlgorithm.getGrid();
   };
 
   return (

@@ -3,12 +3,15 @@ import { deepCopyObject } from "../../utils/Helpers";
 
 class BaseGridGenerator {
   constructor(grid) {
-    this.grid = deepCopyObject(grid);
     this.steps = [];
+    if (grid) this.init(grid);
+  }
+
+  init = (grid) => {
+    this.grid = deepCopyObject(grid);
     this.gridHeight = this.grid.length - 1;
     this.gridWidth = this.grid[0].length - 1;
-    this.addBorders();
-  }
+  };
 
   getSteps = () => {
     return this.steps;
@@ -39,10 +42,6 @@ class BaseGridGenerator {
       this.grid[i][this.gridWidth] = GRID_OBJECTS.WALL;
     }
   };
-
-  //   getRandomNumberInRange = (start, end) => {
-  //     return Math.floor(Math.random() * (end - start) + start);
-  //   };
 }
 
 export default BaseGridGenerator;

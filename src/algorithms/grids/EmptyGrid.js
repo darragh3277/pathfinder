@@ -1,11 +1,13 @@
+import BaseGridGenerator from "./BaseGridGenerator";
 import { GRID_OBJECTS } from "../../constants/Constants";
 
-class EmptyGrid {
+class EmptyGrid extends BaseGridGenerator {
   constructor(width, height, nodeDimension) {
+    super();
     this.width = width;
     this.height = height;
     this.nodeDimension = nodeDimension;
-    return this.generate();
+    this.generate();
   }
 
   generate = () => {
@@ -23,7 +25,7 @@ class EmptyGrid {
     const verticalMidPoint = Math.floor(grid.length / 2);
     grid[verticalMidPoint][Math.floor(row.length * 0.25)] = GRID_OBJECTS.START;
     grid[verticalMidPoint][Math.floor(row.length * 0.75)] = GRID_OBJECTS.END;
-    return grid;
+    this.grid = grid;
   };
 }
 

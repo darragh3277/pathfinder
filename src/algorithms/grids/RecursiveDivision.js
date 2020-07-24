@@ -13,6 +13,7 @@ Recursive Divsion
 class RecursiveDivision extends BaseGridGenerator {
   constructor(grid) {
     super(grid);
+    this.addBorders();
     this.init();
   }
 
