@@ -172,7 +172,7 @@ function Pathfinder() {
   };
 
   const handleClickRunButton = () => {
-    const pathfinder = new Dijkstra(grid);
+    new Dijkstra(grid);
   };
 
   const handleMouseDown = (col, row, object, ref) => {

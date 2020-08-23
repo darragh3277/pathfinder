@@ -1,4 +1,5 @@
 import BasePathfinder from "./BasePathfinder";
+import { GRID_OBJECTS } from "../../constants/Constants";
 
 class Dijkstra extends BasePathfinder {
   constructor(grid) {
@@ -7,15 +8,27 @@ class Dijkstra extends BasePathfinder {
   }
 
   solve = () => {
-    const unvisitedNodes = this.sortNodesByDistance(this.unvistitedNodes);
-    while (unvisitedNodes.length > 0) {
+    let found = false;
+    const unvisitedNodes = this.getUnvisitedNodes();
+    while (unvisitedNodes.length > 0 && found === false) {
+      console.log("a");
+      this.sortNodesByDistance(unvisitedNodes);
       const currentNode = unvisitedNodes.shift();
-      currentNode.visited = true;
+      this.searchPath.push(currentNode);
+      this.grid[currentNode.row][currentNode.col].visited = true;
       const unvisitedNeighbours = this.getUnvisitedNeighbours(currentNode);
-      //check if unvisited neighbours contain end, update distances
+      for (let i = 0; i < unvisitedNeighbours.length; i++) {
+        const neighbourNode = unvisitedNeighbours[i];
+        neighbourNode.prevNode = currentNode;
+        this.grid[neighbourNode.row][neighbourNode.col].distance =
+          currentNode.distance + 1;
+        if (neighbourNode.objectType === GRID_OBJECTS.END) {
+          found = true;
+          this.shortestPath = this.extractShortestPath(currentNode);
+        }
+      }
     }
-    console.log();
-    console.log("solving");
+    console.log("here", this.getShortestPath(), this.getSearchPath());
   };
 }
 
