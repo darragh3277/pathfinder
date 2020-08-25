@@ -46,7 +46,7 @@ function Pathfinder() {
     setSelectedAlgorithm(e.target.value);
   };
 
-  const handleGridChange = (e) => {
+  const handleGridTypeChange = (e) => {
     setSelectedGrid(e.target.value);
   };
 
@@ -55,6 +55,7 @@ function Pathfinder() {
   };
 
   const handleChangeSelectedObject = (e) => {
+    console.log(e.target.value);
     setSelectedObject(e.target.value);
   };
 
@@ -76,8 +77,8 @@ function Pathfinder() {
     setGrid(newGrid);
   };
 
-  const handleClickClearPathButton = (e) => {
-    const newGrid = grid.map((rows) => {
+  const handleClickClearPathButton = () => {
+    grid.map((rows) => {
       return rows.map((node) => {
         if (
           node.objectType === GRID_OBJECTS.VISITED ||
@@ -96,7 +97,6 @@ function Pathfinder() {
     shortestPath.forEach((path) => {
       path.classList.remove("shortest-path");
     });
-    setGrid(newGrid);
   };
 
   const handleDragStart = (node, e) => {
@@ -148,6 +148,7 @@ function Pathfinder() {
   }, []);
 
   const handleClickRunButton = () => {
+    setGrid([...grid]);
     setRunDisabled(true);
     const pathfinder = new Dijkstra(grid);
     if (pathfinder) {
@@ -172,27 +173,16 @@ function Pathfinder() {
   const drawShortestPath = (shortestPath) => {
     const update = setInterval(() => {
       const step = shortestPath.pop();
-      gridRef.current
-        .querySelectorAll(
-          'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
-        )[0]
-        .firstElementChild.classList.add("shortest-path");
+      const node = gridRef.current.querySelectorAll(
+        'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+      )[0];
+      node.firstElementChild.classList.remove("search-path");
+      node.classList.add("shortest-path");
       if (shortestPath.length === 0) {
         clearInterval(update);
         setRunDisabled(false);
       }
     }, drawPathSpeed);
-  };
-
-  const handleMouseDown = (node, ref) => {
-    if (
-      node.objectType !== GRID_OBJECTS.EMPTY &&
-      node.objectType !== GRID_OBJECTS.WALL &&
-      node.objectType !== GRID_OBJECTS.WEIGHT
-    )
-      return false;
-    mousePressed = true;
-    updateGrid(node, ref);
   };
 
   const handleMouseEnter = (node, ref) => {
@@ -206,15 +196,25 @@ function Pathfinder() {
     updateGrid(node, ref);
   };
 
-  const handleMouseUp = () => {
-    mousePressed = false;
-    setGrid([...grid]);
+  const handleMouseDown = (node, ref) => {
+    if (
+      node.objectType !== GRID_OBJECTS.EMPTY &&
+      node.objectType !== GRID_OBJECTS.WALL &&
+      node.objectType !== GRID_OBJECTS.WEIGHT
+    )
+      return false;
+    mousePressed = true;
+    updateGrid(node, ref);
   };
 
-  const handleMouseLeave = () => {
-    if (mousePressed === false) return;
+  //todo efficent grid update
+  const handleMouseUp = () => {
     mousePressed = false;
-    setGrid([...grid]);
+  };
+
+  //todo efficent grid update
+  const handleMouseLeave = () => {
+    mousePressed = false;
   };
 
   const updateGrid = (node, ref) => {
@@ -315,25 +315,26 @@ function Pathfinder() {
       <CssBaseline />
       <Header handleDrawerToggle={handleDrawerToggle} />
       <Sidebar
-        handleDrawerToggle={handleDrawerToggle}
         mobileOpen={mobileOpen}
-        handleAlgorithmChange={handleAlgorithmChange}
         selectedAlgorithm={selectedAlgorithm}
-        handleGridChange={handleGridChange}
         selectedGrid={selectedGrid}
         selectedObject={selectedObject}
         detourAdded={detourAdded}
         runDisabled={runDisabled}
+        handleDrawerToggle={handleDrawerToggle}
+        handleAlgorithmChange={handleAlgorithmChange}
+        handleGridTypeChange={handleGridTypeChange}
+        handleClickRunButton={handleClickRunButton}
         handleChangeSelectedObject={handleChangeSelectedObject}
         handleClickClearPathButton={handleClickClearPathButton}
         handleClickClearBoardButton={handleClickClearBoardButton}
-        handleClickRunButton={handleClickRunButton}
         handleClickClearDetourButton={handleClickClearDetourButton}
       />
       <Grid
         gridRef={gridRef}
         grid={grid}
         nodeDimension={nodeDimension}
+        selectedObject={selectedObject}
         handleMouseDown={handleMouseDown}
         handleMouseEnter={handleMouseEnter}
         handleMouseUp={handleMouseUp}

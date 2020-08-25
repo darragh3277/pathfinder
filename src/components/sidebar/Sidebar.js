@@ -45,10 +45,10 @@ const Sidebar = (props) => {
     runDisabled,
     selectedGrid,
     selectedObject,
-    handleGridChange,
     selectedAlgorithm,
     handleDrawerToggle,
     handleClickRunButton,
+    handleGridTypeChange,
     handleAlgorithmChange,
     handleChangeSelectedObject,
     handleClickClearPathButton,
@@ -73,7 +73,7 @@ const Sidebar = (props) => {
       />
       <Dropdown
         value={selectedGrid}
-        handleChange={handleGridChange}
+        handleChange={handleGridTypeChange}
         options={GRID_TYPES}
         label="Grid"
       />
