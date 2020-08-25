@@ -9,7 +9,7 @@ export const GRID_OBJECTS = {
   PATH: 7,
 };
 
-export const algorithms = [
+export const ALGORITHMS = [
   { id: 1, name: "Dijkstra" },
   { id: 2, name: "A*" },
   { id: 3, name: "Greedy Best-first Search" },
@@ -20,7 +20,7 @@ export const algorithms = [
   { id: 8, name: "Depth-first Search" },
 ];
 
-export const grids = [
+export const GRID_TYPES = [
   { id: 1, name: "Empty" },
   { id: 2, name: "Recursive Division" },
   { id: 3, name: "Vertical Recursive Division" },
@@ -28,4 +28,10 @@ export const grids = [
   { id: 5, name: "Basic Random Maze" },
   { id: 6, name: "Basic Weight Maze" },
   { id: 7, name: "Simple Stair Pattern" },
+];
+
+export const OPTIONAL_OBJECTS = [
+  { id: 1, name: "Wall" },
+  { id: 2, name: "Weight" },
+  { id: 3, name: "Detour" },
 ];

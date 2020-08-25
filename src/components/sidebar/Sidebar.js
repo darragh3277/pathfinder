@@ -5,7 +5,11 @@ import Divider from "@material-ui/core/Divider";
 import Dropdown from "./dropdown/Dropdown";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Button, Grid } from "@material-ui/core";
-import { GRID_OBJECTS, algorithms, grids } from "../../constants/Constants";
+import {
+  ALGORITHMS,
+  GRID_TYPES,
+  OPTIONAL_OBJECTS,
+} from "../../constants/Constants";
 
 const drawerWidth = 240;
 
@@ -43,8 +47,6 @@ const Sidebar = (props) => {
     handleGridChange,
     selectedGrid,
     selectedObject,
-    detourAdded,
-    handleClickDetourButton,
     handleClickClearPathButton,
     handleClickClearBoardButton,
     handleClickRunButton,
@@ -63,33 +65,21 @@ const Sidebar = (props) => {
       <Dropdown
         value={selectedAlgorithm}
         handleChange={handleAlgorithmChange}
-        options={algorithms}
+        options={ALGORITHMS}
         label="Algorithm"
       />
       <Dropdown
         value={selectedGrid}
         handleChange={handleGridChange}
-        options={grids}
+        options={GRID_TYPES}
         label="Grid"
       />
-      <Grid>
-        <Button
-          className={classes.button}
-          color="primary"
-          onClick={handleChangeSelectedObject}
-        >
-          {selectedObject === GRID_OBJECTS.WALL ? "Weight" : "Wall"}
-        </Button>
-      </Grid>
-      <Grid>
-        <Button
-          className={classes.button}
-          color="primary"
-          onClick={handleClickDetourButton}
-        >
-          {detourAdded ? "Clear Detour" : "Detour"}
-        </Button>
-      </Grid>
+      <Dropdown
+        value={selectedObject}
+        handleChange={handleChangeSelectedObject}
+        options={OPTIONAL_OBJECTS}
+        label="Add"
+      />
       <Grid>
         <Button
           className={classes.button}

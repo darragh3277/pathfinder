@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Sidebar from "./components/sidebar/Sidebar";
 import Grid from "./components/grid/Grid";
@@ -29,88 +29,54 @@ function Pathfinder() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("Dijkstra");
   const [selectedGrid, setSelectedGrid] = useState("Empty");
-  const [selectedObject, setSelectedObject] = useState(GRID_OBJECTS.WALL);
+  const [selectedObject, setSelectedObject] = useState("Wall");
   const [detourAdded, setDetourAdded] = useState(false);
   const [grid, setGrid] = useState([]);
   const gridRef = useRef();
   let mousePressed = false;
 
+  const buildGrid = () => {
+    const width = gridRef.current.clientWidth;
+    const height = gridRef.current.clientHeight;
+    return new EmptyGrid(width, height, nodeDimension);
+  };
+
   const handleAlgorithmChange = (e) => {
-    const algorithmName = e.target.value;
-    setSelectedAlgorithm(algorithmName);
+    setSelectedAlgorithm(e.target.value);
   };
 
   const handleGridChange = (e) => {
-    const gridType = e.target.value;
-    setSelectedGrid(gridType);
-
-    let gridAlgorithm;
-    let emptyGrid = resetGrid();
-    switch (gridType) {
-      case "Recursive Division":
-        gridAlgorithm = new RecursiveDivision(emptyGrid);
-        break;
-      case "Vertical Recursive Division":
-        gridAlgorithm = new RecursiveDivisionVertical(emptyGrid);
-        break;
-      case "Horizontal Recursive Division":
-        gridAlgorithm = new RecursiveDivisionHorizontal(emptyGrid);
-        break;
-      case "Simple Stair Pattern":
-        gridAlgorithm = new StairsPattern(emptyGrid);
-        break;
-      default:
-        break;
-    }
-
-    if (gridAlgorithm) {
-      const steps = gridAlgorithm.getSteps();
-      if (steps.length > 0) {
-        const update = setInterval(() => {
-          const step = steps.shift();
-          gridRef.current
-            .querySelectorAll(
-              'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
-            )[0]
-            .classList.add("wall");
-          if (steps.length === 0) {
-            clearInterval(update);
-          }
-        }, drawMazeSpeed);
-        setGrid(gridAlgorithm.getGrid());
-      }
-    } else {
-      setGrid(emptyGrid);
-    }
+    setSelectedGrid(e.target.value);
   };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleChangeSelectedObject = () => {
-    const newObject =
-      selectedObject === GRID_OBJECTS.WALL
-        ? GRID_OBJECTS.WEIGHT
-        : GRID_OBJECTS.WALL;
-    setSelectedObject(newObject);
+  const handleChangeSelectedObject = (e) => {
+    setSelectedObject(e.target.value);
   };
 
-  const handleClickDetourButton = (e) => {
-    if (!detourAdded) {
-      setSelectedObject(GRID_OBJECTS.DETOUR);
-    } else {
-      const newGrid = grid.map((rows) => {
-        return rows.map((node) => {
-          return node.objectType === GRID_OBJECTS.DETOUR
-            ? GRID_OBJECTS.EMPTY
-            : node;
-        });
-      });
-      setDetourAdded(false);
-      setGrid(newGrid);
-    }
+  const handleClickClearBoardButton = () => {
+    setGrid(resetGrid());
+    setSelectedGrid("Empty");
   };
+
+  // const handleClickDetourButton = (e) => {
+  //   if (!detourAdded) {
+  //     setSelectedObject(GRID_OBJECTS.DETOUR);
+  //   } else {
+  //     const newGrid = grid.map((rows) => {
+  //       return rows.map((node) => {
+  //         return node.objectType === GRID_OBJECTS.DETOUR
+  //           ? GRID_OBJECTS.EMPTY
+  //           : node;
+  //       });
+  //     });
+  //     setDetourAdded(false);
+  //     setGrid(newGrid);
+  //   }
+  // };
 
   const handleClickClearPathButton = (e) => {
     const newGrid = grid.map((rows) => {
@@ -160,7 +126,7 @@ function Pathfinder() {
     setGrid([...grid]);
   };
 
-  const resetGrid = () => {
+  const resetGrid = useCallback(() => {
     //Another hacky solution to get react to play nice
     //with altering the DOM directly
     const walls = gridRef.current.querySelectorAll(".wall");
@@ -181,12 +147,7 @@ function Pathfinder() {
     });
     setDetourAdded(false);
     return buildGrid();
-  };
-
-  const handleClickClearBoardButton = () => {
-    setGrid(resetGrid());
-    setSelectedGrid("Empty");
-  };
+  }, []);
 
   const handleClickRunButton = () => {
     const pathfinder = new Dijkstra(grid);
@@ -307,14 +268,45 @@ function Pathfinder() {
   };
 
   useEffect(() => {
+    let gridAlgorithm;
+    const emptyGrid = resetGrid();
+    switch (selectedGrid) {
+      case "Recursive Division":
+        gridAlgorithm = new RecursiveDivision(emptyGrid);
+        break;
+      case "Vertical Recursive Division":
+        gridAlgorithm = new RecursiveDivisionVertical(emptyGrid);
+        break;
+      case "Horizontal Recursive Division":
+        gridAlgorithm = new RecursiveDivisionHorizontal(emptyGrid);
+        break;
+      case "Simple Stair Pattern":
+        gridAlgorithm = new StairsPattern(emptyGrid);
+        break;
+      default:
+        setGrid(emptyGrid);
+        return;
+    }
+    const steps = gridAlgorithm.getSteps();
+    if (steps.length > 0) {
+      const update = setInterval(() => {
+        const step = steps.shift();
+        gridRef.current
+          .querySelectorAll(
+            'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+          )[0]
+          .classList.add("wall");
+        if (steps.length === 0) {
+          clearInterval(update);
+        }
+      }, drawMazeSpeed);
+      setGrid(gridAlgorithm.getGrid());
+    }
+  }, [selectedGrid, resetGrid]);
+
+  useEffect(() => {
     setGrid(buildGrid());
   }, []); //onMount
-
-  const buildGrid = () => {
-    const width = gridRef.current.clientWidth;
-    const height = gridRef.current.clientHeight;
-    return new EmptyGrid(width, height, nodeDimension);
-  };
 
   return (
     <div className={classes.root}>
@@ -330,7 +322,6 @@ function Pathfinder() {
         selectedObject={selectedObject}
         detourAdded={detourAdded}
         handleChangeSelectedObject={handleChangeSelectedObject}
-        handleClickDetourButton={handleClickDetourButton}
         handleClickClearPathButton={handleClickClearPathButton}
         handleClickClearBoardButton={handleClickClearBoardButton}
         handleClickRunButton={handleClickRunButton}
