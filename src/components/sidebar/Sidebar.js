@@ -40,17 +40,19 @@ const useStyles = makeStyles((theme) => ({
 const Sidebar = (props) => {
   const {
     window,
-    handleDrawerToggle,
     mobileOpen,
-    handleAlgorithmChange,
-    selectedAlgorithm,
-    handleGridChange,
+    detourAdded,
     selectedGrid,
     selectedObject,
+    handleGridChange,
+    selectedAlgorithm,
+    handleDrawerToggle,
+    handleClickRunButton,
+    handleAlgorithmChange,
+    handleChangeSelectedObject,
     handleClickClearPathButton,
     handleClickClearBoardButton,
-    handleClickRunButton,
-    handleChangeSelectedObject,
+    handleClickClearDetourButton,
   } = props;
   const theme = useTheme();
   const container =
@@ -80,6 +82,16 @@ const Sidebar = (props) => {
         options={OPTIONAL_OBJECTS}
         label="Add"
       />
+      <Grid>
+        <Button
+          className={classes.button}
+          color="primary"
+          onClick={handleClickClearDetourButton}
+          disabled={!detourAdded}
+        >
+          Clear Detour
+        </Button>
+      </Grid>
       <Grid>
         <Button
           className={classes.button}

@@ -62,21 +62,9 @@ function Pathfinder() {
     setSelectedGrid("Empty");
   };
 
-  // const handleClickDetourButton = (e) => {
-  //   if (!detourAdded) {
-  //     setSelectedObject(GRID_OBJECTS.DETOUR);
-  //   } else {
-  //     const newGrid = grid.map((rows) => {
-  //       return rows.map((node) => {
-  //         return node.objectType === GRID_OBJECTS.DETOUR
-  //           ? GRID_OBJECTS.EMPTY
-  //           : node;
-  //       });
-  //     });
-  //     setDetourAdded(false);
-  //     setGrid(newGrid);
-  //   }
-  // };
+  const handleClickClearDetourButton = (e) => {
+    setDetourAdded(false);
+  };
 
   const handleClickClearPathButton = (e) => {
     const newGrid = grid.map((rows) => {
@@ -222,7 +210,7 @@ function Pathfinder() {
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
     //This should not be replicated
-    if (selectedObject === GRID_OBJECTS.WALL) {
+    if (selectedObject === "Wall") {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
           ref.current.classList.add("wall");
@@ -240,7 +228,7 @@ function Pathfinder() {
         default:
           return;
       }
-    } else if (selectedObject === GRID_OBJECTS.WEIGHT) {
+    } else if (selectedObject === "Weight") {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
           ref.current.classList.add("weight");
@@ -258,12 +246,12 @@ function Pathfinder() {
         default:
           return;
       }
-    } else if (selectedObject === GRID_OBJECTS.DETOUR) {
+    } else if (selectedObject === "Detour") {
       ref.current.classList.remove("weight");
       ref.current.classList.remove("wall");
       node.objectType = GRID_OBJECTS.DETOUR;
       setDetourAdded(true);
-      setSelectedObject(GRID_OBJECTS.WALL);
+      setSelectedObject("Wall");
     }
   };
 
@@ -325,6 +313,7 @@ function Pathfinder() {
         handleClickClearPathButton={handleClickClearPathButton}
         handleClickClearBoardButton={handleClickClearBoardButton}
         handleClickRunButton={handleClickRunButton}
+        handleClickClearDetourButton={handleClickClearDetourButton}
       />
       <Grid
         gridRef={gridRef}
