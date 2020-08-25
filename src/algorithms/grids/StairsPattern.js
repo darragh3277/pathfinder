@@ -21,9 +21,9 @@ class StairsPattern extends BaseGridGenerator {
     //leave gap at the end
     if (this.grid[0][col + 1] === undefined) return;
     //don't overwrite start or end
-    if (this.grid[row][col] === GRID_OBJECTS.EMPTY) {
+    if (this.grid[row][col].objectType === GRID_OBJECTS.EMPTY) {
       this.logSteps(col, row, GRID_OBJECTS.WALL);
-      this.grid[row][col] = GRID_OBJECTS.WALL;
+      this.grid[row][col].objectType = GRID_OBJECTS.WALL;
     }
     const passedStart = col > this.startCoords.col;
     if (up === true) {

@@ -6,12 +6,10 @@ import Dropdown from "./dropdown/Dropdown";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Button, Grid } from "@material-ui/core";
 import {
-  GRID_OBJECTS,
-  algorithms,
-  grids,
-  speeds,
+  ALGORITHMS,
+  GRID_TYPES,
+  OPTIONAL_OBJECTS,
 } from "../../constants/Constants";
-// import Dijkstra from "../../algorithms/Dijkstra";
 
 const drawerWidth = 240;
 
@@ -42,21 +40,20 @@ const useStyles = makeStyles((theme) => ({
 const Sidebar = (props) => {
   const {
     window,
-    handleDrawerToggle,
     mobileOpen,
-    handleAlgorithmChange,
-    selectedAlgorithm,
-    handleGridChange,
-    selectedGrid,
-    handleSpeedChange,
-    selectedSpeed,
-    selectedObject,
     detourAdded,
-    handleClickDetourButton,
+    runDisabled,
+    selectedGrid,
+    selectedObject,
+    handleGridChange,
+    selectedAlgorithm,
+    handleDrawerToggle,
+    handleClickRunButton,
+    handleAlgorithmChange,
+    handleChangeSelectedObject,
     handleClickClearPathButton,
     handleClickClearBoardButton,
-    handleClickRunButton,
-    handleChangeSelectedObject,
+    handleClickClearDetourButton,
   } = props;
   const theme = useTheme();
   const container =
@@ -71,37 +68,29 @@ const Sidebar = (props) => {
       <Dropdown
         value={selectedAlgorithm}
         handleChange={handleAlgorithmChange}
-        options={algorithms}
+        options={ALGORITHMS}
         label="Algorithm"
       />
       <Dropdown
         value={selectedGrid}
         handleChange={handleGridChange}
-        options={grids}
+        options={GRID_TYPES}
         label="Grid"
       />
       <Dropdown
-        value={selectedSpeed}
-        handleChange={handleSpeedChange}
-        options={speeds}
-        label="Speed"
+        value={selectedObject}
+        handleChange={handleChangeSelectedObject}
+        options={OPTIONAL_OBJECTS}
+        label="Add"
       />
       <Grid>
         <Button
           className={classes.button}
           color="primary"
-          onClick={handleChangeSelectedObject}
+          onClick={handleClickClearDetourButton}
+          disabled={!detourAdded}
         >
-          {selectedObject === GRID_OBJECTS.WALL ? "Weight" : "Wall"}
-        </Button>
-      </Grid>
-      <Grid>
-        <Button
-          className={classes.button}
-          color="primary"
-          onClick={handleClickDetourButton}
-        >
-          {detourAdded ? "Clear Detour" : "Detour"}
+          Clear Detour
         </Button>
       </Grid>
       <Grid>
@@ -128,6 +117,7 @@ const Sidebar = (props) => {
           variant="contained"
           color="primary"
           onClick={handleClickRunButton}
+          disabled={runDisabled}
         >
           Run
         </Button>

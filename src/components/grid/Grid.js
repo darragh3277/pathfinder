@@ -24,14 +24,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const gridUpdated = (prevProps, nextProps) => {
-  return (
-    prevProps.grid === nextProps.grid &&
-    prevProps.selectedObject === nextProps.selectedObject &&
-    prevProps.detour === nextProps.detour
-  );
+  return prevProps.grid === nextProps.grid;
 };
 
 const Grid = memo((props) => {
+  console.log("render");
   const classes = useStyles();
   const {
     gridRef,

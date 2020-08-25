@@ -4,6 +4,10 @@
 }
 
 .wall {
+  background-color: rgb(63, 81, 181);
+}
+
+/* .wall {
   animation-name: wallAnimation;
   animation-duration: 0.2s;
   animation-timing-function: ease-out;
@@ -25,4 +29,12 @@
     transform: scale(1);
     background-color: rgb(63, 81, 181);
   }
+} */
+
+.search-path {
+  background-color: red;
+}
+
+.shortest-path {
+  background-color: yellow;
 }

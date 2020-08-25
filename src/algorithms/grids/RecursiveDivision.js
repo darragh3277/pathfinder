@@ -38,8 +38,9 @@ class RecursiveDivision extends BaseGridGenerator {
     const divPoint = columns[getRandomNumberInRange(0, columns.length - 1)];
     const gap = getRandomNumberInRange(yStart, yEnd);
     for (let i = yStart; i <= yEnd; i++) {
-      if (this.grid[i][divPoint] !== GRID_OBJECTS.EMPTY || gap === i) continue;
-      this.grid[i][divPoint] = GRID_OBJECTS.WALL;
+      if (this.grid[i][divPoint].objectType !== GRID_OBJECTS.EMPTY || gap === i)
+        continue;
+      this.grid[i][divPoint].objectType = GRID_OBJECTS.WALL;
       this.logSteps(divPoint, i, GRID_OBJECTS.WALL);
     }
     this.generate(xStart, divPoint - 1, yStart, yEnd, !horizontal); //left grid
@@ -54,8 +55,9 @@ class RecursiveDivision extends BaseGridGenerator {
     const divPoint = rows[getRandomNumberInRange(0, rows.length - 1)];
     const gap = getRandomNumberInRange(xStart, xEnd);
     for (let i = xStart; i <= xEnd; i++) {
-      if (this.grid[divPoint][i] !== GRID_OBJECTS.EMPTY || gap === i) continue;
-      this.grid[divPoint][i] = GRID_OBJECTS.WALL;
+      if (this.grid[divPoint][i].objectType !== GRID_OBJECTS.EMPTY || gap === i)
+        continue;
+      this.grid[divPoint][i].objectType = GRID_OBJECTS.WALL;
       this.logSteps(i, divPoint, GRID_OBJECTS.WALL);
     }
     this.generate(xStart, xEnd, yStart, divPoint - 1, !horizontal); //top grid
@@ -66,8 +68,8 @@ class RecursiveDivision extends BaseGridGenerator {
     const columns = [];
     for (let i = xStart + 1; i <= xEnd - 1; i++) {
       if (
-        this.grid[yStart - 1][i] === GRID_OBJECTS.WALL &&
-        this.grid[yEnd + 1][i] === GRID_OBJECTS.WALL
+        this.grid[yStart - 1][i].objectType === GRID_OBJECTS.WALL &&
+        this.grid[yEnd + 1][i].objectType === GRID_OBJECTS.WALL
       ) {
         columns.push(i);
       }
@@ -79,8 +81,8 @@ class RecursiveDivision extends BaseGridGenerator {
     const rows = [];
     for (let i = yStart + 1; i <= yEnd - 1; i++) {
       if (
-        this.grid[i][xStart - 1] === GRID_OBJECTS.WALL &&
-        this.grid[i][xEnd + 1] === GRID_OBJECTS.WALL
+        this.grid[i][xStart - 1].objectType === GRID_OBJECTS.WALL &&
+        this.grid[i][xEnd + 1].objectType === GRID_OBJECTS.WALL
       ) {
         rows.push(i);
       }

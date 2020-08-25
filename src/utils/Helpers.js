@@ -12,9 +12,11 @@ export function getRandomNumberInRange(start, end) {
 
 export function getObjectCoords(grid, object) {
   for (let i = 0; i < grid.length; i++) {
-    const col = grid[i].indexOf(object);
-    if (col !== -1) {
-      return { col: col, row: i };
+    for (let j = 0; j < grid[i].length; j++) {
+      const node = grid[i][j];
+      if (node.objectType === object) {
+        return { col: node.col, row: node.row };
+      }
     }
   }
 }

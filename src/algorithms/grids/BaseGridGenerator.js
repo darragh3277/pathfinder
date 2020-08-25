@@ -21,16 +21,6 @@ class BaseGridGenerator {
     return this.grid;
   };
 
-  // getStartCoords = () => {
-  //   for (let i = 0; i <= this.gridHeight; i++) {
-  //     // console.log(this.grid[i]);
-  //     const col = this.grid[i].indexOf(GRID_OBJECTS.START);
-  //     if (col !== -1) {
-  //       return { col: col, row: i };
-  //     }
-  //   }
-  // };
-
   //record each step for animation
   logSteps = (col, row, object) => {
     this.steps.push({ col: col, row: row, object: object });
@@ -41,15 +31,15 @@ class BaseGridGenerator {
     for (let i = 0; i <= this.gridWidth; i++) {
       this.logSteps(i, 0, GRID_OBJECTS.WALL);
       this.logSteps(this.gridWidth - i, this.gridHeight, GRID_OBJECTS.WALL);
-      this.grid[0][i] = GRID_OBJECTS.WALL;
-      this.grid[this.gridHeight][i] = GRID_OBJECTS.WALL;
+      this.grid[0][i].objectType = GRID_OBJECTS.WALL;
+      this.grid[this.gridHeight][i].objectType = GRID_OBJECTS.WALL;
     }
 
     for (let i = 0; i <= this.gridHeight; i++) {
       this.logSteps(0, this.gridHeight - i, GRID_OBJECTS.WALL);
       this.logSteps(this.gridWidth, i, GRID_OBJECTS.WALL);
-      this.grid[i][0] = GRID_OBJECTS.WALL;
-      this.grid[i][this.gridWidth] = GRID_OBJECTS.WALL;
+      this.grid[i][0].objectType = GRID_OBJECTS.WALL;
+      this.grid[i][this.gridWidth].objectType = GRID_OBJECTS.WALL;
     }
   };
 }

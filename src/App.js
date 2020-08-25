@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Sidebar from "./components/sidebar/Sidebar";
 import Grid from "./components/grid/Grid";
@@ -20,138 +20,111 @@ const useStyles = makeStyles(() => ({
 }));
 
 const nodeDimension = 25; //size of each block
+const drawMazeSpeed = 10; //speed mazes are drawn at
+const drawSearchSpeed = 5; //speed search is drawn at
+const drawPathSpeed = 20; //speed shortest path is drawn at
 
 function Pathfinder() {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("Dijkstra");
   const [selectedGrid, setSelectedGrid] = useState("Empty");
-  const [selectedSpeed, setSelectedSpeed] = useState("Fast");
-  const [selectedObject, setSelectedObject] = useState(GRID_OBJECTS.WALL);
+  const [selectedObject, setSelectedObject] = useState("Wall");
   const [detourAdded, setDetourAdded] = useState(false);
+  const [runDisabled, setRunDisabled] = useState(false);
   const [grid, setGrid] = useState([]);
   const gridRef = useRef();
   let mousePressed = false;
 
+  const buildGrid = () => {
+    const width = gridRef.current.clientWidth;
+    const height = gridRef.current.clientHeight;
+    return new EmptyGrid(width, height, nodeDimension);
+  };
+
   const handleAlgorithmChange = (e) => {
-    const algorithmName = e.target.value;
-    setSelectedAlgorithm(algorithmName);
+    setSelectedAlgorithm(e.target.value);
   };
 
   const handleGridChange = (e) => {
-    const gridType = e.target.value;
-    setSelectedGrid(gridType);
-
-    let gridAlgorithm;
-    let emptyGrid = resetGrid();
-    switch (gridType) {
-      case "Recursive Division":
-        gridAlgorithm = new RecursiveDivision(emptyGrid);
-        break;
-      case "Vertical Recursive Division":
-        gridAlgorithm = new RecursiveDivisionVertical(emptyGrid);
-        break;
-      case "Horizontal Recursive Division":
-        gridAlgorithm = new RecursiveDivisionHorizontal(emptyGrid);
-        break;
-      case "Simple Stair Pattern":
-        gridAlgorithm = new StairsPattern(emptyGrid);
-        break;
-      default:
-        break;
-    }
-
-    if (gridAlgorithm) {
-      const steps = gridAlgorithm.getSteps();
-      if (steps.length > 0) {
-        const update = setInterval(() => {
-          const step = steps.shift();
-          gridRef.current
-            .querySelectorAll(
-              'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
-            )[0]
-            .classList.add("wall");
-          if (steps.length === 0) {
-            clearInterval(update);
-          }
-        }, 10);
-        setGrid(gridAlgorithm.getGrid());
-      }
-    } else {
-      setGrid(emptyGrid);
-    }
-  };
-
-  const handleSpeedChange = (e) => {
-    setSelectedSpeed(e.target.value);
+    setSelectedGrid(e.target.value);
   };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleChangeSelectedObject = () => {
-    const newObject =
-      selectedObject === GRID_OBJECTS.WALL
-        ? GRID_OBJECTS.WEIGHT
-        : GRID_OBJECTS.WALL;
-    setSelectedObject(newObject);
+  const handleChangeSelectedObject = (e) => {
+    setSelectedObject(e.target.value);
   };
 
-  const handleClickDetourButton = (e) => {
-    if (!detourAdded) {
-      setSelectedObject(GRID_OBJECTS.DETOUR);
-    } else {
-      const newGrid = grid.map((rows) => {
-        return rows.map((object) => {
-          return object === GRID_OBJECTS.DETOUR ? GRID_OBJECTS.EMPTY : object;
-        });
-      });
-      setDetourAdded(false);
-      setGrid(newGrid);
-    }
+  const handleClickClearBoardButton = () => {
+    setGrid(resetGrid());
+    setSelectedGrid("Empty");
   };
 
-  const handleClickClearPathButton = (e) => {
+  const handleClickClearDetourButton = () => {
+    setDetourAdded(false);
     const newGrid = grid.map((rows) => {
-      return rows.map((object) => {
-        if (object === GRID_OBJECTS.VISITED || object === GRID_OBJECTS.PATH) {
-          return GRID_OBJECTS.EMPTY;
+      return rows.map((node) => {
+        if (node.objectType === GRID_OBJECTS.DETOUR) {
+          node.objectType = GRID_OBJECTS.EMPTY;
         }
-        return object;
+        return node;
       });
     });
     setGrid(newGrid);
   };
 
-  const handleDragStart = (col, row, e) => {
-    e.dataTransfer.setData("col", col);
-    e.dataTransfer.setData("row", row);
-    e.dataTransfer.setData("object", grid[row][col]);
+  const handleClickClearPathButton = (e) => {
+    const newGrid = grid.map((rows) => {
+      return rows.map((node) => {
+        if (
+          node.objectType === GRID_OBJECTS.VISITED ||
+          node.objectType === GRID_OBJECTS.PATH
+        ) {
+          node.objectType = GRID_OBJECTS.EMPTY;
+        }
+        return node;
+      });
+    });
+    const searchPath = gridRef.current.querySelectorAll(".search-path");
+    searchPath.forEach((path) => {
+      path.classList.remove("search-path");
+    });
+    const shortestPath = gridRef.current.querySelectorAll(".shortest-path");
+    shortestPath.forEach((path) => {
+      path.classList.remove("shortest-path");
+    });
+    setGrid(newGrid);
   };
 
-  const handleDrop = (col, row, e) => {
+  const handleDragStart = (node, e) => {
+    e.dataTransfer.setData("col", node.col);
+    e.dataTransfer.setData("row", node.row);
+    e.dataTransfer.setData("objectType", node.objectType);
+  };
+
+  const handleDrop = (targetNode, e) => {
     e.preventDefault();
     if (
-      grid[row][col] === GRID_OBJECTS.START ||
-      grid[row][col] === GRID_OBJECTS.END
-    )
-      return;
-    if (
-      e.dataTransfer.getData("object") === "" ||
+      targetNode.objectType === GRID_OBJECTS.START ||
+      targetNode.objectType === GRID_OBJECTS.END ||
+      e.dataTransfer.getData("col") === "" ||
       e.dataTransfer.getData("row") === "" ||
-      e.dataTransfer.getData("col") === ""
+      e.dataTransfer.getData("objectType") === ""
     )
       return;
-    grid[row][col] = parseInt(e.dataTransfer.getData("object"));
-    grid[e.dataTransfer.getData("row")][e.dataTransfer.getData("col")] =
-      GRID_OBJECTS.EMPTY;
+    const originCol = e.dataTransfer.getData("col");
+    const originRow = e.dataTransfer.getData("row");
+    grid[originRow][originCol].objectType = GRID_OBJECTS.EMPTY;
+    targetNode.objectType = parseInt(e.dataTransfer.getData("objectType"));
     e.target.parentElement.classList.remove("wall");
     e.target.parentElement.classList.remove("weight");
     setGrid([...grid]);
   };
 
-  const resetGrid = () => {
+  const resetGrid = useCallback(() => {
     //Another hacky solution to get react to play nice
     //with altering the DOM directly
     const walls = gridRef.current.querySelectorAll(".wall");
@@ -162,39 +135,75 @@ function Pathfinder() {
     weights.forEach((weight) => {
       weight.classList.remove("weight");
     });
+    const searchPath = gridRef.current.querySelectorAll(".search-path");
+    searchPath.forEach((path) => {
+      path.classList.remove("search-path");
+    });
+    const shortestPath = gridRef.current.querySelectorAll(".shortest-path");
+    shortestPath.forEach((path) => {
+      path.classList.remove("shortest-path");
+    });
     setDetourAdded(false);
     return buildGrid();
-  };
-
-  const handleClickClearBoardButton = () => {
-    setGrid(resetGrid());
-    setSelectedGrid("Empty");
-  };
+  }, []);
 
   const handleClickRunButton = () => {
+    setRunDisabled(true);
     const pathfinder = new Dijkstra(grid);
+    if (pathfinder) {
+      const path = pathfinder.getSearchPath();
+      if (path.length > 0) {
+        const update = setInterval(() => {
+          const step = path.shift();
+          gridRef.current
+            .querySelectorAll(
+              'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+            )[0]
+            .firstElementChild.classList.add("search-path");
+          if (path.length === 0) {
+            clearInterval(update);
+            drawShortestPath(pathfinder.getShortestPath());
+          }
+        }, drawSearchSpeed);
+      }
+    }
   };
 
-  const handleMouseDown = (col, row, object, ref) => {
+  const drawShortestPath = (shortestPath) => {
+    const update = setInterval(() => {
+      const step = shortestPath.pop();
+      gridRef.current
+        .querySelectorAll(
+          'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+        )[0]
+        .firstElementChild.classList.add("shortest-path");
+      if (shortestPath.length === 0) {
+        clearInterval(update);
+        setRunDisabled(false);
+      }
+    }, drawPathSpeed);
+  };
+
+  const handleMouseDown = (node, ref) => {
     if (
-      object !== GRID_OBJECTS.EMPTY &&
-      object !== GRID_OBJECTS.WALL &&
-      object !== GRID_OBJECTS.WEIGHT
+      node.objectType !== GRID_OBJECTS.EMPTY &&
+      node.objectType !== GRID_OBJECTS.WALL &&
+      node.objectType !== GRID_OBJECTS.WEIGHT
     )
       return false;
     mousePressed = true;
-    updateGrid(col, row, ref);
+    updateGrid(node, ref);
   };
 
-  const handleMouseEnter = (col, row, object, ref) => {
+  const handleMouseEnter = (node, ref) => {
     if (
-      object !== GRID_OBJECTS.EMPTY &&
-      object !== GRID_OBJECTS.WALL &&
-      object !== GRID_OBJECTS.WEIGHT
+      node.objectType !== GRID_OBJECTS.EMPTY &&
+      node.objectType !== GRID_OBJECTS.WALL &&
+      node.objectType !== GRID_OBJECTS.WEIGHT
     )
       return false;
     if (mousePressed === false) return;
-    updateGrid(col, row, ref);
+    updateGrid(node, ref);
   };
 
   const handleMouseUp = () => {
@@ -208,65 +217,98 @@ function Pathfinder() {
     setGrid([...grid]);
   };
 
-  const updateGrid = (col, row, ref) => {
+  const updateGrid = (node, ref) => {
     //triggering large amounts of react state changes
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
     //This should not be replicated
-    if (selectedObject === GRID_OBJECTS.WALL) {
-      switch (grid[row][col]) {
+    if (selectedObject === "Wall") {
+      switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
           ref.current.classList.add("wall");
-          grid[row][col] = GRID_OBJECTS.WALL;
+          node.objectType = GRID_OBJECTS.WALL;
           break;
         case GRID_OBJECTS.WALL:
           ref.current.classList.remove("wall");
-          grid[row][col] = GRID_OBJECTS.EMPTY;
+          node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WEIGHT:
           ref.current.classList.remove("weight");
           ref.current.classList.add("wall");
-          grid[row][col] = GRID_OBJECTS.WALL;
+          node.objectType = GRID_OBJECTS.WALL;
           break;
         default:
           return;
       }
-    } else if (selectedObject === GRID_OBJECTS.WEIGHT) {
-      switch (grid[row][col]) {
+    } else if (selectedObject === "Weight") {
+      switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
           ref.current.classList.add("weight");
-          grid[row][col] = GRID_OBJECTS.WEIGHT;
+          node.objectType = GRID_OBJECTS.WEIGHT;
           break;
         case GRID_OBJECTS.WEIGHT:
           ref.current.classList.remove("weight");
-          grid[row][col] = GRID_OBJECTS.EMPTY;
+          node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WALL:
           ref.current.classList.remove("wall");
           ref.current.classList.add("weight");
-          grid[row][col] = GRID_OBJECTS.WEIGHT;
+          node.objectType = GRID_OBJECTS.WEIGHT;
           break;
         default:
           return;
       }
-    } else if (selectedObject === GRID_OBJECTS.DETOUR) {
+    } else if (selectedObject === "Detour") {
       ref.current.classList.remove("weight");
       ref.current.classList.remove("wall");
-      grid[row][col] = GRID_OBJECTS.DETOUR;
+      node.objectType = GRID_OBJECTS.DETOUR;
       setDetourAdded(true);
-      setSelectedObject(GRID_OBJECTS.WALL);
+      setSelectedObject("Wall");
     }
   };
 
   useEffect(() => {
+    let gridAlgorithm;
+    const emptyGrid = resetGrid();
+    switch (selectedGrid) {
+      case "Recursive Division":
+        gridAlgorithm = new RecursiveDivision(emptyGrid);
+        break;
+      case "Vertical Recursive Division":
+        gridAlgorithm = new RecursiveDivisionVertical(emptyGrid);
+        break;
+      case "Horizontal Recursive Division":
+        gridAlgorithm = new RecursiveDivisionHorizontal(emptyGrid);
+        break;
+      case "Simple Stair Pattern":
+        gridAlgorithm = new StairsPattern(emptyGrid);
+        break;
+      default:
+        setGrid(emptyGrid);
+        return;
+    }
+    setRunDisabled(true);
+    const steps = gridAlgorithm.getSteps();
+    if (steps.length > 0) {
+      const update = setInterval(() => {
+        const step = steps.shift();
+        gridRef.current
+          .querySelectorAll(
+            'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+          )[0]
+          .classList.add("wall");
+        if (steps.length === 0) {
+          clearInterval(update);
+          setRunDisabled(false);
+          setGrid(gridAlgorithm.getGrid());
+        }
+      }, drawMazeSpeed);
+    }
+  }, [selectedGrid, resetGrid]);
+
+  useEffect(() => {
     setGrid(buildGrid());
   }, []); //onMount
-
-  const buildGrid = () => {
-    const width = gridRef.current.clientWidth;
-    const height = gridRef.current.clientHeight;
-    return new EmptyGrid(width, height, nodeDimension);
-  };
 
   return (
     <div className={classes.root}>
@@ -277,17 +319,16 @@ function Pathfinder() {
         mobileOpen={mobileOpen}
         handleAlgorithmChange={handleAlgorithmChange}
         selectedAlgorithm={selectedAlgorithm}
-        handleSpeedChange={handleSpeedChange}
-        selectedSpeed={selectedSpeed}
         handleGridChange={handleGridChange}
         selectedGrid={selectedGrid}
         selectedObject={selectedObject}
         detourAdded={detourAdded}
+        runDisabled={runDisabled}
         handleChangeSelectedObject={handleChangeSelectedObject}
-        handleClickDetourButton={handleClickDetourButton}
         handleClickClearPathButton={handleClickClearPathButton}
         handleClickClearBoardButton={handleClickClearBoardButton}
         handleClickRunButton={handleClickRunButton}
+        handleClickClearDetourButton={handleClickClearDetourButton}
       />
       <Grid
         gridRef={gridRef}
@@ -299,7 +340,6 @@ function Pathfinder() {
         handleMouseLeave={handleMouseLeave}
         handleDragStart={handleDragStart}
         handleDrop={handleDrop}
-        selectedObject={selectedObject}
       />
     </div>
   );
