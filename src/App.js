@@ -31,6 +31,7 @@ function Pathfinder() {
   const [selectedGrid, setSelectedGrid] = useState("Empty");
   const [selectedObject, setSelectedObject] = useState("Wall");
   const [detourAdded, setDetourAdded] = useState(false);
+  const [runDisabled, setRunDisabled] = useState(false);
   const [grid, setGrid] = useState([]);
   const gridRef = useRef();
   let mousePressed = false;
@@ -147,6 +148,7 @@ function Pathfinder() {
   }, []);
 
   const handleClickRunButton = () => {
+    setRunDisabled(true);
     const pathfinder = new Dijkstra(grid);
     if (pathfinder) {
       const path = pathfinder.getSearchPath();
@@ -177,6 +179,7 @@ function Pathfinder() {
         .firstElementChild.classList.add("shortest-path");
       if (shortestPath.length === 0) {
         clearInterval(update);
+        setRunDisabled(false);
       }
     }, drawPathSpeed);
   };
@@ -284,6 +287,7 @@ function Pathfinder() {
         setGrid(emptyGrid);
         return;
     }
+    setRunDisabled(true);
     const steps = gridAlgorithm.getSteps();
     if (steps.length > 0) {
       const update = setInterval(() => {
@@ -295,9 +299,10 @@ function Pathfinder() {
           .classList.add("wall");
         if (steps.length === 0) {
           clearInterval(update);
+          setRunDisabled(false);
+          setGrid(gridAlgorithm.getGrid());
         }
       }, drawMazeSpeed);
-      setGrid(gridAlgorithm.getGrid());
     }
   }, [selectedGrid, resetGrid]);
 
@@ -318,6 +323,7 @@ function Pathfinder() {
         selectedGrid={selectedGrid}
         selectedObject={selectedObject}
         detourAdded={detourAdded}
+        runDisabled={runDisabled}
         handleChangeSelectedObject={handleChangeSelectedObject}
         handleClickClearPathButton={handleClickClearPathButton}
         handleClickClearBoardButton={handleClickClearBoardButton}

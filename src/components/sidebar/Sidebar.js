@@ -42,6 +42,7 @@ const Sidebar = (props) => {
     window,
     mobileOpen,
     detourAdded,
+    runDisabled,
     selectedGrid,
     selectedObject,
     handleGridChange,
@@ -116,6 +117,7 @@ const Sidebar = (props) => {
           variant="contained"
           color="primary"
           onClick={handleClickRunButton}
+          disabled={runDisabled}
         >
           Run
         </Button>
