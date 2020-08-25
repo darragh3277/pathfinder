@@ -62,8 +62,17 @@ function Pathfinder() {
     setSelectedGrid("Empty");
   };
 
-  const handleClickClearDetourButton = (e) => {
+  const handleClickClearDetourButton = () => {
     setDetourAdded(false);
+    const newGrid = grid.map((rows) => {
+      return rows.map((node) => {
+        if (node.objectType === GRID_OBJECTS.DETOUR) {
+          node.objectType = GRID_OBJECTS.EMPTY;
+        }
+        return node;
+      });
+    });
+    setGrid(newGrid);
   };
 
   const handleClickClearPathButton = (e) => {
@@ -325,7 +334,6 @@ function Pathfinder() {
         handleMouseLeave={handleMouseLeave}
         handleDragStart={handleDragStart}
         handleDrop={handleDrop}
-        selectedObject={selectedObject}
       />
     </div>
   );
