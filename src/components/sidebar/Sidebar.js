@@ -5,13 +5,7 @@ import Divider from "@material-ui/core/Divider";
 import Dropdown from "./dropdown/Dropdown";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Button, Grid } from "@material-ui/core";
-import {
-  GRID_OBJECTS,
-  algorithms,
-  grids,
-  speeds,
-} from "../../constants/Constants";
-// import Dijkstra from "../../algorithms/Dijkstra";
+import { GRID_OBJECTS, algorithms, grids } from "../../constants/Constants";
 
 const drawerWidth = 240;
 
@@ -48,8 +42,6 @@ const Sidebar = (props) => {
     selectedAlgorithm,
     handleGridChange,
     selectedGrid,
-    handleSpeedChange,
-    selectedSpeed,
     selectedObject,
     detourAdded,
     handleClickDetourButton,
@@ -79,12 +71,6 @@ const Sidebar = (props) => {
         handleChange={handleGridChange}
         options={grids}
         label="Grid"
-      />
-      <Dropdown
-        value={selectedSpeed}
-        handleChange={handleSpeedChange}
-        options={speeds}
-        label="Speed"
       />
       <Grid>
         <Button

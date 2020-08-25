@@ -33,19 +33,14 @@ const Node = (props) => {
     <td
       ref={nodeRef}
       className={classes.node}
-      onMouseDown={() => handleMouseDown(col, row, node, nodeRef)}
-      onMouseEnter={() => handleMouseEnter(col, row, node, nodeRef)}
-      onDrop={(e) => handleDrop(col, row, e)}
+      onMouseDown={() => handleMouseDown(node, nodeRef)}
+      onMouseEnter={() => handleMouseEnter(node, nodeRef)}
+      onDrop={(e) => handleDrop(node, e)}
       onDragOver={onDragOver}
       data-col={col}
       data-row={row}
     >
-      <GridObject
-        object={node}
-        handleDragStart={handleDragStart}
-        col={col}
-        row={row}
-      />
+      <GridObject node={node} handleDragStart={handleDragStart} />
     </td>
   );
 };

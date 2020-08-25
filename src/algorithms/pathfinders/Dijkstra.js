@@ -11,7 +11,6 @@ class Dijkstra extends BasePathfinder {
     let found = false;
     const unvisitedNodes = this.getUnvisitedNodes();
     while (unvisitedNodes.length > 0 && found === false) {
-      console.log("a");
       this.sortNodesByDistance(unvisitedNodes);
       const currentNode = unvisitedNodes.shift();
       this.searchPath.push(currentNode);
@@ -28,7 +27,6 @@ class Dijkstra extends BasePathfinder {
         }
       }
     }
-    console.log("here", this.getShortestPath(), this.getSearchPath());
   };
 }
 

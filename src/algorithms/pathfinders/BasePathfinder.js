@@ -1,8 +1,9 @@
 import { GRID_OBJECTS } from "../../constants/Constants";
+import { deepCopyObject } from "../../utils/Helpers";
 
 class BasePathfinder {
   constructor(grid) {
-    this.grid = this.buildNodeGrid(grid);
+    this.grid = deepCopyObject(grid);
     this.shortestPath = [];
     this.searchPath = [];
   }
@@ -13,19 +14,6 @@ class BasePathfinder {
 
   getSearchPath = () => {
     return this.searchPath;
-  };
-
-  buildNodeGrid = (grid) => {
-    const nodeGrid = [];
-    for (let i = 0; i < grid.length; i++) {
-      const row = [];
-      for (let j = 0; j < grid[i].length; j++) {
-        const objectType = grid[i][j];
-        row.push(this.createNode(j, i, objectType));
-      }
-      nodeGrid.push(row);
-    }
-    return nodeGrid;
   };
 
   getUnvisitedNodes = () => {
@@ -77,17 +65,6 @@ class BasePathfinder {
       node = node.prevNode;
     }
     return path;
-  };
-
-  createNode = (col, row, objectType) => {
-    return {
-      col,
-      row,
-      distance: Infinity,
-      visited: false,
-      objectType,
-      prevNode: null,
-    };
   };
 }
 

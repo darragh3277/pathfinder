@@ -31,15 +31,15 @@ class BaseGridGenerator {
     for (let i = 0; i <= this.gridWidth; i++) {
       this.logSteps(i, 0, GRID_OBJECTS.WALL);
       this.logSteps(this.gridWidth - i, this.gridHeight, GRID_OBJECTS.WALL);
-      this.grid[0][i] = GRID_OBJECTS.WALL;
-      this.grid[this.gridHeight][i] = GRID_OBJECTS.WALL;
+      this.grid[0][i].objectType = GRID_OBJECTS.WALL;
+      this.grid[this.gridHeight][i].objectType = GRID_OBJECTS.WALL;
     }
 
     for (let i = 0; i <= this.gridHeight; i++) {
       this.logSteps(0, this.gridHeight - i, GRID_OBJECTS.WALL);
       this.logSteps(this.gridWidth, i, GRID_OBJECTS.WALL);
-      this.grid[i][0] = GRID_OBJECTS.WALL;
-      this.grid[i][this.gridWidth] = GRID_OBJECTS.WALL;
+      this.grid[i][0].objectType = GRID_OBJECTS.WALL;
+      this.grid[i][this.gridWidth].objectType = GRID_OBJECTS.WALL;
     }
   };
 }

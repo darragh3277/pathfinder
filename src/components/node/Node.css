@@ -26,3 +26,11 @@
     background-color: rgb(63, 81, 181);
   }
 }
+
+.search-path {
+  background-color: red;
+}
+
+.shortest-path {
+  background-color: yellow;
+}

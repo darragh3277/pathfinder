@@ -28,8 +28,9 @@ class RecursiveDivision extends BaseGridGenerator {
     const divPoint = columns[getRandomNumberInRange(0, columns.length - 1)];
     const gap = getRandomNumberInRange(yStart, yEnd);
     for (let i = yStart; i <= yEnd; i++) {
-      if (this.grid[i][divPoint] !== GRID_OBJECTS.EMPTY || gap === i) continue;
-      this.grid[i][divPoint] = GRID_OBJECTS.WALL;
+      if (this.grid[i][divPoint].objectType !== GRID_OBJECTS.EMPTY || gap === i)
+        continue;
+      this.grid[i][divPoint].objectType = GRID_OBJECTS.WALL;
       this.logSteps(divPoint, i, GRID_OBJECTS.WALL);
     }
     this.generate(xStart, divPoint - 1, yStart, yEnd); //left grid
@@ -40,8 +41,8 @@ class RecursiveDivision extends BaseGridGenerator {
     const columns = [];
     for (let i = xStart + 1; i <= xEnd - 1; i++) {
       if (
-        this.grid[yStart - 1][i] === GRID_OBJECTS.WALL &&
-        this.grid[yEnd + 1][i] === GRID_OBJECTS.WALL
+        this.grid[yStart - 1][i].objectType === GRID_OBJECTS.WALL &&
+        this.grid[yEnd + 1][i].objectType === GRID_OBJECTS.WALL
       ) {
         columns.push(i);
       }

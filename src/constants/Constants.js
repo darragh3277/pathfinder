@@ -29,9 +29,3 @@ export const grids = [
   { id: 6, name: "Basic Weight Maze" },
   { id: 7, name: "Simple Stair Pattern" },
 ];
-
-export const speeds = [
-  { id: 1, name: "Fast", speed: 10 },
-  { id: 2, name: "Medium", speed: 100 },
-  { id: 3, name: "Slow", speed: 500 },
-];

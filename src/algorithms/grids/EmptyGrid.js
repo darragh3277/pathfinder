@@ -14,18 +14,34 @@ class EmptyGrid extends BaseGridGenerator {
     const grid = [];
     const numRows = Math.floor(this.height / this.nodeDimension);
     const numCols = Math.floor(this.width / this.nodeDimension);
-    let row = [];
-    for (let i = 0; i < numCols; i++) {
-      row.push(GRID_OBJECTS.EMPTY);
-    }
     for (let i = 0; i < numRows; i++) {
-      grid.push([...row]);
+      const row = [];
+      for (let j = 0; j < numCols; j++) {
+        row.push(this.createNode(j, i, GRID_OBJECTS.EMPTY));
+      }
+      grid.push(row);
     }
-    //set default start and end points
-    const verticalMidPoint = Math.floor(grid.length / 2);
-    grid[verticalMidPoint][Math.floor(row.length * 0.25)] = GRID_OBJECTS.START;
-    grid[verticalMidPoint][Math.floor(row.length * 0.75)] = GRID_OBJECTS.END;
+    this.updateGridStartAndEndPoints(grid, numCols, numRows);
     return grid;
+  };
+
+  updateGridStartAndEndPoints = (grid, numCols, numRows) => {
+    const rowMidpoint = Math.floor(numRows / 2);
+    const colStartpint = Math.floor(numCols * 0.25);
+    const colEndpoint = Math.floor(numCols * 0.75);
+    grid[rowMidpoint][colStartpint].objectType = GRID_OBJECTS.START;
+    grid[rowMidpoint][colEndpoint].objectType = GRID_OBJECTS.END;
+  };
+
+  createNode = (col, row, objectType) => {
+    return {
+      col,
+      row,
+      distance: Infinity,
+      visited: false,
+      objectType,
+      prevNode: null,
+    };
   };
 }
 

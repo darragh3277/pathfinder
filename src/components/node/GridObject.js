@@ -20,13 +20,13 @@ const useStyles = makeStyles(() => ({
 
 function GridObject(props) {
   const classes = useStyles();
-  const { col, row, object, handleDragStart } = props;
-  switch (object) {
+  const { node, handleDragStart } = props;
+  switch (node.objectType) {
     case GRID_OBJECTS.START:
       return (
         <div
           draggable="true"
-          onDragStart={(e) => handleDragStart(col, row, e)}
+          onDragStart={(e) => handleDragStart(node, e)}
           className={classes.span}
         >
           <NearMeIcon className={classes.object} />
@@ -36,7 +36,7 @@ function GridObject(props) {
       return (
         <div
           draggable="true"
-          onDragStart={(e) => handleDragStart(col, row, e)}
+          onDragStart={(e) => handleDragStart(node, e)}
           className={classes.span}
         >
           <RoomIcon className={classes.object} />
@@ -46,7 +46,7 @@ function GridObject(props) {
       return (
         <div
           draggable="true"
-          onDragStart={(e) => handleDragStart(col, row, e)}
+          onDragStart={(e) => handleDragStart(node, e)}
           className={classes.span}
         >
           <AddLocationIcon className={classes.object} />
