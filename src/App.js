@@ -29,10 +29,11 @@ function Pathfinder() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("Dijkstra");
   const [selectedGrid, setSelectedGrid] = useState("Empty");
-  const [selectedObject, setSelectedObject] = useState("Wall");
+  const [selectedObject, _setSelectedObject] = useState("Wall");
   const [detourAdded, setDetourAdded] = useState(false);
   const [runDisabled, setRunDisabled] = useState(false);
   const [grid, setGrid] = useState([]);
+  const selectedObjectRef = React.useRef(selectedObject);
   const gridRef = useRef();
   let mousePressed = false;
 
@@ -42,11 +43,16 @@ function Pathfinder() {
     return new EmptyGrid(width, height, nodeDimension);
   };
 
+  const setSelectedObject = (object) => {
+    selectedObjectRef.current = object;
+    _setSelectedObject(object);
+  };
+
   const handleAlgorithmChange = (e) => {
     setSelectedAlgorithm(e.target.value);
   };
 
-  const handleGridChange = (e) => {
+  const handleGridTypeChange = (e) => {
     setSelectedGrid(e.target.value);
   };
 
@@ -76,8 +82,8 @@ function Pathfinder() {
     setGrid(newGrid);
   };
 
-  const handleClickClearPathButton = (e) => {
-    const newGrid = grid.map((rows) => {
+  const handleClickClearPathButton = () => {
+    grid.map((rows) => {
       return rows.map((node) => {
         if (
           node.objectType === GRID_OBJECTS.VISITED ||
@@ -88,15 +94,12 @@ function Pathfinder() {
         return node;
       });
     });
-    const searchPath = gridRef.current.querySelectorAll(".search-path");
-    searchPath.forEach((path) => {
+    gridRef.current.querySelectorAll(".search-path").forEach((path) => {
       path.classList.remove("search-path");
     });
-    const shortestPath = gridRef.current.querySelectorAll(".shortest-path");
-    shortestPath.forEach((path) => {
+    gridRef.current.querySelectorAll(".shortest-path").forEach((path) => {
       path.classList.remove("shortest-path");
     });
-    setGrid(newGrid);
   };
 
   const handleDragStart = (node, e) => {
@@ -127,20 +130,16 @@ function Pathfinder() {
   const resetGrid = useCallback(() => {
     //Another hacky solution to get react to play nice
     //with altering the DOM directly
-    const walls = gridRef.current.querySelectorAll(".wall");
-    walls.forEach((wall) => {
+    gridRef.current.querySelectorAll(".wall").forEach((wall) => {
       wall.classList.remove("wall");
     });
-    const weights = gridRef.current.querySelectorAll(".weight");
-    weights.forEach((weight) => {
+    gridRef.current.querySelectorAll(".weight").forEach((weight) => {
       weight.classList.remove("weight");
     });
-    const searchPath = gridRef.current.querySelectorAll(".search-path");
-    searchPath.forEach((path) => {
+    gridRef.current.querySelectorAll(".search-path").forEach((path) => {
       path.classList.remove("search-path");
     });
-    const shortestPath = gridRef.current.querySelectorAll(".shortest-path");
-    shortestPath.forEach((path) => {
+    gridRef.current.querySelectorAll(".shortest-path").forEach((path) => {
       path.classList.remove("shortest-path");
     });
     setDetourAdded(false);
@@ -148,6 +147,7 @@ function Pathfinder() {
   }, []);
 
   const handleClickRunButton = () => {
+    setGrid([...grid]);
     setRunDisabled(true);
     const pathfinder = new Dijkstra(grid);
     if (pathfinder) {
@@ -172,27 +172,16 @@ function Pathfinder() {
   const drawShortestPath = (shortestPath) => {
     const update = setInterval(() => {
       const step = shortestPath.pop();
-      gridRef.current
-        .querySelectorAll(
-          'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
-        )[0]
-        .firstElementChild.classList.add("shortest-path");
+      const node = gridRef.current.querySelectorAll(
+        'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+      )[0];
+      node.firstElementChild.classList.remove("search-path");
+      node.classList.add("shortest-path");
       if (shortestPath.length === 0) {
         clearInterval(update);
         setRunDisabled(false);
       }
     }, drawPathSpeed);
-  };
-
-  const handleMouseDown = (node, ref) => {
-    if (
-      node.objectType !== GRID_OBJECTS.EMPTY &&
-      node.objectType !== GRID_OBJECTS.WALL &&
-      node.objectType !== GRID_OBJECTS.WEIGHT
-    )
-      return false;
-    mousePressed = true;
-    updateGrid(node, ref);
   };
 
   const handleMouseEnter = (node, ref) => {
@@ -206,15 +195,25 @@ function Pathfinder() {
     updateGrid(node, ref);
   };
 
-  const handleMouseUp = () => {
-    mousePressed = false;
-    setGrid([...grid]);
+  const handleMouseDown = (node, ref) => {
+    if (
+      node.objectType !== GRID_OBJECTS.EMPTY &&
+      node.objectType !== GRID_OBJECTS.WALL &&
+      node.objectType !== GRID_OBJECTS.WEIGHT
+    )
+      return false;
+    mousePressed = true;
+    updateGrid(node, ref);
   };
 
-  const handleMouseLeave = () => {
-    if (mousePressed === false) return;
+  //todo efficent grid update
+  const handleMouseUp = () => {
     mousePressed = false;
-    setGrid([...grid]);
+  };
+
+  //todo efficent grid update
+  const handleMouseLeave = () => {
+    mousePressed = false;
   };
 
   const updateGrid = (node, ref) => {
@@ -222,7 +221,7 @@ function Pathfinder() {
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
     //This should not be replicated
-    if (selectedObject === "Wall") {
+    if (selectedObjectRef.current === "Wall") {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
           ref.current.classList.add("wall");
@@ -240,7 +239,7 @@ function Pathfinder() {
         default:
           return;
       }
-    } else if (selectedObject === "Weight") {
+    } else if (selectedObjectRef.current === "Weight") {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
           ref.current.classList.add("weight");
@@ -258,12 +257,13 @@ function Pathfinder() {
         default:
           return;
       }
-    } else if (selectedObject === "Detour") {
+    } else if (selectedObjectRef.current === "Detour") {
       ref.current.classList.remove("weight");
       ref.current.classList.remove("wall");
       node.objectType = GRID_OBJECTS.DETOUR;
       setDetourAdded(true);
       setSelectedObject("Wall");
+      setGrid([...grid]);
     }
   };
 
@@ -315,25 +315,26 @@ function Pathfinder() {
       <CssBaseline />
       <Header handleDrawerToggle={handleDrawerToggle} />
       <Sidebar
-        handleDrawerToggle={handleDrawerToggle}
         mobileOpen={mobileOpen}
-        handleAlgorithmChange={handleAlgorithmChange}
         selectedAlgorithm={selectedAlgorithm}
-        handleGridChange={handleGridChange}
         selectedGrid={selectedGrid}
         selectedObject={selectedObject}
         detourAdded={detourAdded}
         runDisabled={runDisabled}
+        handleDrawerToggle={handleDrawerToggle}
+        handleAlgorithmChange={handleAlgorithmChange}
+        handleGridTypeChange={handleGridTypeChange}
+        handleClickRunButton={handleClickRunButton}
         handleChangeSelectedObject={handleChangeSelectedObject}
         handleClickClearPathButton={handleClickClearPathButton}
         handleClickClearBoardButton={handleClickClearBoardButton}
-        handleClickRunButton={handleClickRunButton}
         handleClickClearDetourButton={handleClickClearDetourButton}
       />
       <Grid
         gridRef={gridRef}
         grid={grid}
         nodeDimension={nodeDimension}
+        selectedObject={selectedObject}
         handleMouseDown={handleMouseDown}
         handleMouseEnter={handleMouseEnter}
         handleMouseUp={handleMouseUp}

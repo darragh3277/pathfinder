@@ -45,10 +45,10 @@ const Sidebar = (props) => {
     runDisabled,
     selectedGrid,
     selectedObject,
-    handleGridChange,
     selectedAlgorithm,
     handleDrawerToggle,
     handleClickRunButton,
+    handleGridTypeChange,
     handleAlgorithmChange,
     handleChangeSelectedObject,
     handleClickClearPathButton,
@@ -58,7 +58,7 @@ const Sidebar = (props) => {
   const theme = useTheme();
   const container =
     window !== undefined ? () => window().document.body : undefined;
-
+  const disableDetour = { value: "Detour", disabled: detourAdded };
   const classes = useStyles();
 
   const drawer = (
@@ -73,7 +73,7 @@ const Sidebar = (props) => {
       />
       <Dropdown
         value={selectedGrid}
-        handleChange={handleGridChange}
+        handleChange={handleGridTypeChange}
         options={GRID_TYPES}
         label="Grid"
       />
@@ -82,6 +82,7 @@ const Sidebar = (props) => {
         handleChange={handleChangeSelectedObject}
         options={OPTIONAL_OBJECTS}
         label="Add"
+        disableOption={disableDetour}
       />
       <Grid>
         <Button

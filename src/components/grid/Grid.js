@@ -28,7 +28,6 @@ const gridUpdated = (prevProps, nextProps) => {
 };
 
 const Grid = memo((props) => {
-  console.log("render");
   const classes = useStyles();
   const {
     gridRef,
