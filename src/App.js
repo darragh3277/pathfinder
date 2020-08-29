@@ -31,7 +31,7 @@ function Pathfinder() {
   const [selectedGrid, setSelectedGrid] = useState("Empty");
   const [selectedObject, _setSelectedObject] = useState("Wall");
   const [detourAdded, setDetourAdded] = useState(false);
-  const [runDisabled, setRunDisabled] = useState(false);
+  const [running, setRunning] = useState(false);
   const [grid, setGrid] = useState([]);
   const selectedObjectRef = React.useRef(selectedObject);
   const gridRef = useRef();
@@ -82,7 +82,7 @@ function Pathfinder() {
     setGrid(newGrid);
   };
 
-  const handleClickClearPathButton = () => {
+  const clearPath = () => {
     grid.map((rows) => {
       return rows.map((node) => {
         if (
@@ -100,6 +100,10 @@ function Pathfinder() {
     gridRef.current.querySelectorAll(".shortest-path").forEach((path) => {
       path.classList.remove("shortest-path");
     });
+  };
+
+  const handleClickClearPathButton = () => {
+    clearPath();
   };
 
   const handleDragStart = (node, e) => {
@@ -147,8 +151,9 @@ function Pathfinder() {
   }, []);
 
   const handleClickRunButton = () => {
+    clearPath();
     setGrid([...grid]);
-    setRunDisabled(true);
+    setRunning(true);
     const pathfinder = new Dijkstra(grid);
     if (pathfinder) {
       const path = pathfinder.getSearchPath();
@@ -179,7 +184,7 @@ function Pathfinder() {
       node.classList.add("shortest-path");
       if (shortestPath.length === 0) {
         clearInterval(update);
-        setRunDisabled(false);
+        setRunning(false);
       }
     }, drawPathSpeed);
   };
@@ -287,7 +292,7 @@ function Pathfinder() {
         setGrid(emptyGrid);
         return;
     }
-    setRunDisabled(true);
+    setRunning(true);
     const steps = gridAlgorithm.getSteps();
     if (steps.length > 0) {
       const update = setInterval(() => {
@@ -299,7 +304,7 @@ function Pathfinder() {
           .classList.add("wall");
         if (steps.length === 0) {
           clearInterval(update);
-          setRunDisabled(false);
+          setRunning(false);
           setGrid(gridAlgorithm.getGrid());
         }
       }, drawMazeSpeed);
@@ -320,7 +325,7 @@ function Pathfinder() {
         selectedGrid={selectedGrid}
         selectedObject={selectedObject}
         detourAdded={detourAdded}
-        runDisabled={runDisabled}
+        running={running}
         handleDrawerToggle={handleDrawerToggle}
         handleAlgorithmChange={handleAlgorithmChange}
         handleGridTypeChange={handleGridTypeChange}
