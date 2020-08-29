@@ -44,7 +44,6 @@ function Pathfinder() {
   };
 
   const setSelectedObject = (object) => {
-    console.log("object selected", object);
     selectedObjectRef.current = object;
     _setSelectedObject(object);
   };

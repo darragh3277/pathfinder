@@ -58,7 +58,7 @@ const Sidebar = (props) => {
   const theme = useTheme();
   const container =
     window !== undefined ? () => window().document.body : undefined;
-
+  const disableDetour = { value: "Detour", disabled: detourAdded };
   const classes = useStyles();
 
   const drawer = (
@@ -82,6 +82,7 @@ const Sidebar = (props) => {
         handleChange={handleChangeSelectedObject}
         options={OPTIONAL_OBJECTS}
         label="Add"
+        disableOption={disableDetour}
       />
       <Grid>
         <Button

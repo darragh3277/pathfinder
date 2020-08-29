@@ -9,17 +9,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const buildOptions = (options) =>
+const buildOptions = (options, disableOption) =>
   options.map((option) => {
     return (
-      <MenuItem key={option.id} value={option.name}>
+      <MenuItem
+        key={option.id}
+        value={option.name}
+        disabled={
+          disableOption &&
+          disableOption.value === option.name &&
+          disableOption.disabled
+        }
+      >
         {option.name}
       </MenuItem>
     );
   });
 
 export default (props) => {
-  const { value, handleChange, options, label } = props;
+  const { value, handleChange, options, label, disableOption } = props;
   const classes = useStyles();
   return (
     <FormControl className={classes.formControl}>
@@ -30,7 +38,7 @@ export default (props) => {
         value={value}
         onChange={handleChange}
       >
-        {buildOptions(options)}
+        {buildOptions(options, disableOption)}
       </Select>
     </FormControl>
   );
