@@ -21,6 +21,9 @@ const useStyles = makeStyles(() => ({
 function GridObject(props) {
   const classes = useStyles();
   const { node, handleDragStart } = props;
+  if (node.objectType === 4) {
+    console.log("detour render");
+  }
   switch (node.objectType) {
     case GRID_OBJECTS.START:
       return (

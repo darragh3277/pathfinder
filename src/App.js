@@ -44,6 +44,7 @@ function Pathfinder() {
   };
 
   const setSelectedObject = (object) => {
+    console.log("object selected", object);
     selectedObjectRef.current = object;
     _setSelectedObject(object);
   };
@@ -217,7 +218,6 @@ function Pathfinder() {
   };
 
   const updateGrid = (node, ref) => {
-    console.log("hi", selectedObject);
     //triggering large amounts of react state changes
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
@@ -264,6 +264,7 @@ function Pathfinder() {
       node.objectType = GRID_OBJECTS.DETOUR;
       setDetourAdded(true);
       setSelectedObject("Wall");
+      setGrid([...grid]);
     }
   };
 

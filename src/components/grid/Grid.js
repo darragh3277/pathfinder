@@ -40,6 +40,7 @@ const Grid = memo((props) => {
     handleDragStart,
     handleDrop,
   } = props;
+  console.log("render");
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
