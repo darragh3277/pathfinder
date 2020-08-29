@@ -29,10 +29,11 @@ function Pathfinder() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("Dijkstra");
   const [selectedGrid, setSelectedGrid] = useState("Empty");
-  const [selectedObject, setSelectedObject] = useState("Wall");
+  const [selectedObject, _setSelectedObject] = useState("Wall");
   const [detourAdded, setDetourAdded] = useState(false);
   const [runDisabled, setRunDisabled] = useState(false);
   const [grid, setGrid] = useState([]);
+  const selectedObjectRef = React.useRef(selectedObject);
   const gridRef = useRef();
   let mousePressed = false;
 
@@ -40,6 +41,11 @@ function Pathfinder() {
     const width = gridRef.current.clientWidth;
     const height = gridRef.current.clientHeight;
     return new EmptyGrid(width, height, nodeDimension);
+  };
+
+  const setSelectedObject = (object) => {
+    selectedObjectRef.current = object;
+    _setSelectedObject(object);
   };
 
   const handleAlgorithmChange = (e) => {
@@ -55,7 +61,6 @@ function Pathfinder() {
   };
 
   const handleChangeSelectedObject = (e) => {
-    console.log(e.target.value);
     setSelectedObject(e.target.value);
   };
 
@@ -212,11 +217,12 @@ function Pathfinder() {
   };
 
   const updateGrid = (node, ref) => {
+    console.log("hi", selectedObject);
     //triggering large amounts of react state changes
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
     //This should not be replicated
-    if (selectedObject === "Wall") {
+    if (selectedObjectRef.current === "Wall") {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
           ref.current.classList.add("wall");
@@ -234,7 +240,7 @@ function Pathfinder() {
         default:
           return;
       }
-    } else if (selectedObject === "Weight") {
+    } else if (selectedObjectRef.current === "Weight") {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
           ref.current.classList.add("weight");
@@ -252,7 +258,7 @@ function Pathfinder() {
         default:
           return;
       }
-    } else if (selectedObject === "Detour") {
+    } else if (selectedObjectRef.current === "Detour") {
       ref.current.classList.remove("weight");
       ref.current.classList.remove("wall");
       node.objectType = GRID_OBJECTS.DETOUR;
