@@ -89,12 +89,10 @@ function Pathfinder() {
         return node;
       });
     });
-    const searchPath = gridRef.current.querySelectorAll(".search-path");
-    searchPath.forEach((path) => {
+    gridRef.current.querySelectorAll(".search-path").forEach((path) => {
       path.classList.remove("search-path");
     });
-    const shortestPath = gridRef.current.querySelectorAll(".shortest-path");
-    shortestPath.forEach((path) => {
+    gridRef.current.querySelectorAll(".shortest-path").forEach((path) => {
       path.classList.remove("shortest-path");
     });
   };
@@ -127,20 +125,16 @@ function Pathfinder() {
   const resetGrid = useCallback(() => {
     //Another hacky solution to get react to play nice
     //with altering the DOM directly
-    const walls = gridRef.current.querySelectorAll(".wall");
-    walls.forEach((wall) => {
+    gridRef.current.querySelectorAll(".wall").forEach((wall) => {
       wall.classList.remove("wall");
     });
-    const weights = gridRef.current.querySelectorAll(".weight");
-    weights.forEach((weight) => {
+    gridRef.current.querySelectorAll(".weight").forEach((weight) => {
       weight.classList.remove("weight");
     });
-    const searchPath = gridRef.current.querySelectorAll(".search-path");
-    searchPath.forEach((path) => {
+    gridRef.current.querySelectorAll(".search-path").forEach((path) => {
       path.classList.remove("search-path");
     });
-    const shortestPath = gridRef.current.querySelectorAll(".shortest-path");
-    shortestPath.forEach((path) => {
+    gridRef.current.querySelectorAll(".shortest-path").forEach((path) => {
       path.classList.remove("shortest-path");
     });
     setDetourAdded(false);
