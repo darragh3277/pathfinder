@@ -91,6 +91,9 @@ function Pathfinder() {
         ) {
           node.objectType = GRID_OBJECTS.EMPTY;
         }
+        node.distance = Infinity;
+        node.prevNode = null;
+        node.visited = false;
         return node;
       });
     });
@@ -170,6 +173,8 @@ function Pathfinder() {
             drawShortestPath(pathfinder.getShortestPath());
           }
         }, drawSearchSpeed);
+      } else {
+        setRunning(false);
       }
     }
   };
