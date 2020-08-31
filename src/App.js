@@ -175,6 +175,10 @@ function Pathfinder() {
   };
 
   const drawShortestPath = (shortestPath) => {
+    if (shortestPath.length === 0) {
+      setRunning(false);
+      return;
+    }
     const update = setInterval(() => {
       const step = shortestPath.pop();
       const node = gridRef.current.querySelectorAll(
