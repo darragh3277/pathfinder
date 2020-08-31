@@ -216,6 +216,8 @@ function Pathfinder() {
       node.objectType !== GRID_OBJECTS.WEIGHT
     )
       return false;
+    //TODO move running check to ref
+    if (running === true) return;
     mousePressed = true;
     updateGrid(node, ref);
   };
