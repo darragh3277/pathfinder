@@ -5,7 +5,7 @@ import "./Node.css";
 
 const useStyles = makeStyles(() => ({
   node: {
-    border: "1px solid black",
+    border: "1px solid #d1c4e9",
     padding: "0",
   },
 }));
