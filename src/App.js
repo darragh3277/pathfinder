@@ -5,6 +5,7 @@ import Grid from "./components/grid/Grid";
 import Header from "./components/header/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import { GRID_OBJECTS } from "./constants/Constants";
+import BasicGrid from "./algorithms/grids/BasicGrid";
 import RecursiveDivision from "./algorithms/grids/RecursiveDivision";
 import RecursiveDivisionVertical from "./algorithms/grids/RecursiveDivisionVertical";
 import RecursiveDivisionHorizontal from "./algorithms/grids/RecursiveDivisionHorizontal";
@@ -277,9 +278,9 @@ function Pathfinder() {
       ref.current.classList.remove("weight");
       ref.current.classList.remove("wall");
       node.objectType = GRID_OBJECTS.DETOUR;
+      setGrid([...grid]);
       setDetourAdded(true);
       setSelectedObject("Wall");
-      setGrid([...grid]);
     }
   };
 
@@ -299,6 +300,12 @@ function Pathfinder() {
       case "Simple Stair Pattern":
         gridAlgorithm = new StairsPattern(emptyGrid);
         break;
+      case "Basic Random Maze":
+        gridAlgorithm = new BasicGrid(emptyGrid, GRID_OBJECTS.WALL);
+        break;
+      case "Basic Weight Maze":
+        gridAlgorithm = new BasicGrid(emptyGrid, GRID_OBJECTS.WEIGHT);
+        break;
       default:
         setGrid(emptyGrid);
         return;
@@ -307,12 +314,14 @@ function Pathfinder() {
     const steps = gridAlgorithm.getSteps();
     if (steps.length > 0) {
       const update = setInterval(() => {
+        const objectClass =
+          gridAlgorithm.getType() === GRID_OBJECTS.WALL ? "wall" : "weight";
         const step = steps.shift();
         gridRef.current
           .querySelectorAll(
             'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
           )[0]
-          .classList.add("wall");
+          .classList.add(objectClass);
         if (steps.length === 0) {
           clearInterval(update);
           setRunning(false);

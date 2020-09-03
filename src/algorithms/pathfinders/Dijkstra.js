@@ -1,5 +1,5 @@
 import BasePathfinder from "./BasePathfinder";
-import { GRID_OBJECTS } from "../../constants/Constants";
+import { GRID_OBJECTS, WEIGHT_VALUE } from "../../constants/Constants";
 
 class Dijkstra extends BasePathfinder {
   constructor(grid) {
@@ -30,8 +30,12 @@ class Dijkstra extends BasePathfinder {
       for (let i = 0; i < unvisitedNeighbours.length; i++) {
         const neighbourNode = unvisitedNeighbours[i];
         neighbourNode.prevNode = currentNode;
+        let distance = 1;
+        if (neighbourNode.objectType === GRID_OBJECTS.WEIGHT) {
+          distance = WEIGHT_VALUE;
+        }
         this.grid[neighbourNode.row][neighbourNode.col].distance =
-          currentNode.distance + 1;
+          currentNode.distance + distance;
         //if one of the neighbours is the end node finish and set the
         //shortest path
         if (neighbourNode.objectType === GRID_OBJECTS.END) {

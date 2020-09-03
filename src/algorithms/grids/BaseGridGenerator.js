@@ -3,6 +3,7 @@ import { deepCopyObject } from "../../utils/Helpers";
 
 class BaseGridGenerator {
   constructor(grid) {
+    this.type = GRID_OBJECTS.WALL;
     this.steps = [];
     if (grid) this.init(grid);
   }
@@ -11,6 +12,10 @@ class BaseGridGenerator {
     this.grid = deepCopyObject(grid);
     this.gridHeight = this.grid.length - 1;
     this.gridWidth = this.grid[0].length - 1;
+  };
+
+  getType = () => {
+    return this.type;
   };
 
   getSteps = () => {
