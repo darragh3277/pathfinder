@@ -1,23 +1,12 @@
 /* Not using styled components due to the need to update DOM directly for performance */
 .weight {
-  animation-name: weightAnimation;
+  animation-name: popIn;
   animation-duration: 0.2s;
   background-image: url(/icons/weight.svg);
 }
-@keyframes weightAnimation {
-  0% {
-    transform: scale(0.3);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
 
 .wall {
-  animation-name: wallAnimation;
+  animation-name: popIn;
   animation-duration: 0.2s;
   animation-timing-function: ease-out;
   animation-direction: alternate;
@@ -26,7 +15,8 @@
   animation-play-state: running;
   background-color: rgb(63, 81, 181);
 }
-@keyframes wallAnimation {
+
+@keyframes popIn {
   0% {
     transform: scale(0.3);
   }
