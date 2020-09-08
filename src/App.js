@@ -238,19 +238,20 @@ function Pathfinder() {
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
     //This should not be replicated
+    const domNodeElement = ref.current.firstElementChild;
     if (selectedObjectRef.current === "Wall") {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
-          ref.current.classList.add("wall");
+          domNodeElement.classList.add("wall");
           node.objectType = GRID_OBJECTS.WALL;
           break;
         case GRID_OBJECTS.WALL:
-          ref.current.classList.remove("wall");
+          domNodeElement.classList.remove("wall");
           node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WEIGHT:
-          ref.current.classList.remove("weight");
-          ref.current.classList.add("wall");
+          domNodeElement.classList.remove("weight");
+          domNodeElement.classList.add("wall");
           node.objectType = GRID_OBJECTS.WALL;
           break;
         default:
@@ -259,24 +260,24 @@ function Pathfinder() {
     } else if (selectedObjectRef.current === "Weight") {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
-          ref.current.classList.add("weight");
+          domNodeElement.classList.add("weight");
           node.objectType = GRID_OBJECTS.WEIGHT;
           break;
         case GRID_OBJECTS.WEIGHT:
-          ref.current.classList.remove("weight");
+          domNodeElement.classList.remove("weight");
           node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WALL:
-          ref.current.classList.remove("wall");
-          ref.current.classList.add("weight");
+          domNodeElement.classList.remove("wall");
+          domNodeElement.classList.add("weight");
           node.objectType = GRID_OBJECTS.WEIGHT;
           break;
         default:
           return;
       }
     } else if (selectedObjectRef.current === "Detour") {
-      ref.current.classList.remove("weight");
-      ref.current.classList.remove("wall");
+      domNodeElement.classList.remove("weight");
+      domNodeElement.classList.remove("wall");
       node.objectType = GRID_OBJECTS.DETOUR;
       setGrid([...grid]);
       setDetourAdded(true);
