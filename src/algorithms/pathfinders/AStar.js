@@ -13,10 +13,15 @@ class Dijkstra extends BasePathfinder {
     const endCoords = getObjectCoords(this.grid, GRID_OBJECTS.END);
     //get a list of all unvisited nodes
     const unvisitedNodes = this.getUnvisitedNodes();
-    while (unvisitedNodes.length > 0 && found === false) {
+    while (unvisitedNodes.length > 0) {
       //sort unvisited nodes by distance
       this.sortNodesByDistance(unvisitedNodes);
       const currentNode = unvisitedNodes.shift();
+      //end if the current node is the end object
+      if (currentNode.objectType === GRID_OBJECTS.END) {
+        this.shortestPath = this.extractShortestPath(currentNode);
+        break;
+      }
       //if the closest node is set to infinity then it's an
       //unreachable node, return
       if (currentNode.distance === Infinity) return;
@@ -25,34 +30,30 @@ class Dijkstra extends BasePathfinder {
       if (currentNode.distance > 0) {
         this.searchPath.push(currentNode);
       }
-      this.grid[currentNode.row][currentNode.col].visited = true;
+      currentNode.visited = true;
       //get all the current nodes neighbours
       const unvisitedNeighbours = this.getUnvisitedNeighbours(currentNode);
       //update neighbour nodes distance
       for (let i = 0; i < unvisitedNeighbours.length; i++) {
         const neighbourNode = unvisitedNeighbours[i];
-        //if neighbours node has had it's distance set already
-        //then continue
-        if (neighbourNode.distance !== Infinity) continue;
-        neighbourNode.prevNode = currentNode;
-        let distance = 1;
-        if (neighbourNode.objectType === GRID_OBJECTS.WEIGHT) {
-          distance = WEIGHT_VALUE;
-        }
-        //add the manhattan distance for astar search
-        const manhattan = manhattanDistance(
-          neighbourNode.col,
-          neighbourNode.row,
-          endCoords.col,
-          endCoords.row
-        );
-        this.grid[neighbourNode.row][neighbourNode.col].distance =
-          currentNode.distance + distance + manhattan;
-        //if one of the neighbours is the end node finish and set the
-        //shortest path
-        if (neighbourNode.objectType === GRID_OBJECTS.END) {
-          found = true;
-          this.shortestPath = this.extractShortestPath(currentNode);
+        const stepCost =
+          neighbourNode.objectType === GRID_OBJECTS.WEIGHT ? WEIGHT_VALUE : 1;
+
+        const currentDistance =
+          neighbourNode.distance === Infinity
+            ? stepCost
+            : neighbourNode.distance;
+
+        const newDistance = currentNode.distance + stepCost;
+
+        //if new distance is less than existing one
+        //or node is at infinity then update
+        if (
+          neighbourNode.distance === Infinity ||
+          currentDistance > newDistance
+        ) {
+          neighbourNode.prevNode = currentNode;
+          neighbourNode.distance = newDistance;
         }
       }
     }
