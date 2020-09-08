@@ -29,6 +29,9 @@ class Dijkstra extends BasePathfinder {
       //update neighbour nodes distance
       for (let i = 0; i < unvisitedNeighbours.length; i++) {
         const neighbourNode = unvisitedNeighbours[i];
+        //if neighbours node has had it's distance set already
+        //then continue
+        if (neighbourNode.distance !== Infinity) continue;
         neighbourNode.prevNode = currentNode;
         let distance = 1;
         if (neighbourNode.objectType === GRID_OBJECTS.WEIGHT) {
