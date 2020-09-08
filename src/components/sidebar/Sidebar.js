@@ -40,9 +40,9 @@ const useStyles = makeStyles((theme) => ({
 const Sidebar = (props) => {
   const {
     window,
+    running,
     mobileOpen,
     detourAdded,
-    runDisabled,
     selectedGrid,
     selectedObject,
     selectedAlgorithm,
@@ -89,7 +89,7 @@ const Sidebar = (props) => {
           className={classes.button}
           color="primary"
           onClick={handleClickClearDetourButton}
-          disabled={!detourAdded}
+          disabled={!detourAdded || running}
         >
           Clear Detour
         </Button>
@@ -99,6 +99,7 @@ const Sidebar = (props) => {
           className={classes.button}
           color="primary"
           onClick={handleClickClearPathButton}
+          disabled={running}
         >
           Clear Path
         </Button>
@@ -108,6 +109,7 @@ const Sidebar = (props) => {
           className={classes.button}
           color="primary"
           onClick={handleClickClearBoardButton}
+          disabled={running}
         >
           Clear Board
         </Button>
@@ -118,7 +120,7 @@ const Sidebar = (props) => {
           variant="contained"
           color="primary"
           onClick={handleClickRunButton}
-          disabled={runDisabled}
+          disabled={running}
         >
           Run
         </Button>

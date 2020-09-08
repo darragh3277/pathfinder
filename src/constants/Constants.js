@@ -9,6 +9,8 @@ export const GRID_OBJECTS = {
   PATH: 7,
 };
 
+export const WEIGHT_VALUE = 10;
+
 export const ALGORITHMS = [
   { id: 1, name: "Dijkstra" },
   { id: 2, name: "A*" },

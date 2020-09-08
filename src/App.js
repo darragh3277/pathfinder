@@ -5,6 +5,7 @@ import Grid from "./components/grid/Grid";
 import Header from "./components/header/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import { GRID_OBJECTS } from "./constants/Constants";
+import BasicGrid from "./algorithms/grids/BasicGrid";
 import RecursiveDivision from "./algorithms/grids/RecursiveDivision";
 import RecursiveDivisionVertical from "./algorithms/grids/RecursiveDivisionVertical";
 import RecursiveDivisionHorizontal from "./algorithms/grids/RecursiveDivisionHorizontal";
@@ -31,9 +32,10 @@ function Pathfinder() {
   const [selectedGrid, setSelectedGrid] = useState("Empty");
   const [selectedObject, _setSelectedObject] = useState("Wall");
   const [detourAdded, setDetourAdded] = useState(false);
-  const [runDisabled, setRunDisabled] = useState(false);
+  const [running, _setRunning] = useState(false);
   const [grid, setGrid] = useState([]);
   const selectedObjectRef = React.useRef(selectedObject);
+  const runningRef = React.useRef(running);
   const gridRef = useRef();
   let mousePressed = false;
 
@@ -46,6 +48,11 @@ function Pathfinder() {
   const setSelectedObject = (object) => {
     selectedObjectRef.current = object;
     _setSelectedObject(object);
+  };
+
+  const setRunning = (running) => {
+    runningRef.current = running;
+    _setRunning(running);
   };
 
   const handleAlgorithmChange = (e) => {
@@ -82,7 +89,7 @@ function Pathfinder() {
     setGrid(newGrid);
   };
 
-  const handleClickClearPathButton = () => {
+  const clearPath = () => {
     grid.map((rows) => {
       return rows.map((node) => {
         if (
@@ -91,6 +98,9 @@ function Pathfinder() {
         ) {
           node.objectType = GRID_OBJECTS.EMPTY;
         }
+        node.distance = Infinity;
+        node.prevNode = null;
+        node.visited = false;
         return node;
       });
     });
@@ -100,6 +110,10 @@ function Pathfinder() {
     gridRef.current.querySelectorAll(".shortest-path").forEach((path) => {
       path.classList.remove("shortest-path");
     });
+  };
+
+  const handleClickClearPathButton = () => {
+    clearPath();
   };
 
   const handleDragStart = (node, e) => {
@@ -147,8 +161,9 @@ function Pathfinder() {
   }, []);
 
   const handleClickRunButton = () => {
+    clearPath();
     setGrid([...grid]);
-    setRunDisabled(true);
+    setRunning(true);
     const pathfinder = new Dijkstra(grid);
     if (pathfinder) {
       const path = pathfinder.getSearchPath();
@@ -165,21 +180,27 @@ function Pathfinder() {
             drawShortestPath(pathfinder.getShortestPath());
           }
         }, drawSearchSpeed);
+      } else {
+        setRunning(false);
       }
     }
   };
 
   const drawShortestPath = (shortestPath) => {
+    if (shortestPath.length === 0) {
+      setRunning(false);
+      return;
+    }
     const update = setInterval(() => {
       const step = shortestPath.pop();
       const node = gridRef.current.querySelectorAll(
         'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
       )[0];
       node.firstElementChild.classList.remove("search-path");
-      node.classList.add("shortest-path");
+      node.firstElementChild.classList.add("shortest-path");
       if (shortestPath.length === 0) {
         clearInterval(update);
-        setRunDisabled(false);
+        setRunning(false);
       }
     }, drawPathSpeed);
   };
@@ -202,6 +223,8 @@ function Pathfinder() {
       node.objectType !== GRID_OBJECTS.WEIGHT
     )
       return false;
+    //TODO move running check to ref
+    if (runningRef.current === true) return;
     mousePressed = true;
     updateGrid(node, ref);
   };
@@ -221,19 +244,26 @@ function Pathfinder() {
     //causes performance issues. I've implemented a hacky
     //solution to update the DOM directly using refs.
     //This should not be replicated
+    const domNodeElement = ref.current.firstElementChild;
     if (selectedObjectRef.current === "Wall") {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
-          ref.current.classList.add("wall");
+          domNodeElement.classList.add("wall");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.WALL;
           break;
         case GRID_OBJECTS.WALL:
-          ref.current.classList.remove("wall");
+          domNodeElement.classList.remove("wall");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WEIGHT:
-          ref.current.classList.remove("weight");
-          ref.current.classList.add("wall");
+          domNodeElement.classList.remove("weight");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
+          domNodeElement.classList.add("wall");
           node.objectType = GRID_OBJECTS.WALL;
           break;
         default:
@@ -242,28 +272,36 @@ function Pathfinder() {
     } else if (selectedObjectRef.current === "Weight") {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
-          ref.current.classList.add("weight");
+          domNodeElement.classList.add("weight");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.WEIGHT;
           break;
         case GRID_OBJECTS.WEIGHT:
-          ref.current.classList.remove("weight");
+          domNodeElement.classList.remove("weight");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WALL:
-          ref.current.classList.remove("wall");
-          ref.current.classList.add("weight");
+          domNodeElement.classList.remove("wall");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
+          domNodeElement.classList.add("weight");
           node.objectType = GRID_OBJECTS.WEIGHT;
           break;
         default:
           return;
       }
     } else if (selectedObjectRef.current === "Detour") {
-      ref.current.classList.remove("weight");
-      ref.current.classList.remove("wall");
+      domNodeElement.classList.remove("weight");
+      domNodeElement.classList.remove("search-path");
+      domNodeElement.classList.remove("shortest-path");
+      domNodeElement.classList.remove("wall");
       node.objectType = GRID_OBJECTS.DETOUR;
+      setGrid([...grid]);
       setDetourAdded(true);
       setSelectedObject("Wall");
-      setGrid([...grid]);
     }
   };
 
@@ -283,23 +321,31 @@ function Pathfinder() {
       case "Simple Stair Pattern":
         gridAlgorithm = new StairsPattern(emptyGrid);
         break;
+      case "Basic Random Maze":
+        gridAlgorithm = new BasicGrid(emptyGrid, GRID_OBJECTS.WALL);
+        break;
+      case "Basic Weight Maze":
+        gridAlgorithm = new BasicGrid(emptyGrid, GRID_OBJECTS.WEIGHT);
+        break;
       default:
         setGrid(emptyGrid);
         return;
     }
-    setRunDisabled(true);
+    setRunning(true);
     const steps = gridAlgorithm.getSteps();
     if (steps.length > 0) {
       const update = setInterval(() => {
+        const objectClass =
+          gridAlgorithm.getType() === GRID_OBJECTS.WALL ? "wall" : "weight";
         const step = steps.shift();
         gridRef.current
           .querySelectorAll(
             'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
           )[0]
-          .classList.add("wall");
+          .classList.add(objectClass);
         if (steps.length === 0) {
           clearInterval(update);
-          setRunDisabled(false);
+          setRunning(false);
           setGrid(gridAlgorithm.getGrid());
         }
       }, drawMazeSpeed);
@@ -320,7 +366,7 @@ function Pathfinder() {
         selectedGrid={selectedGrid}
         selectedObject={selectedObject}
         detourAdded={detourAdded}
-        runDisabled={runDisabled}
+        running={running}
         handleDrawerToggle={handleDrawerToggle}
         handleAlgorithmChange={handleAlgorithmChange}
         handleGridTypeChange={handleGridTypeChange}
