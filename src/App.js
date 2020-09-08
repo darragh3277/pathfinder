@@ -32,9 +32,10 @@ function Pathfinder() {
   const [selectedGrid, setSelectedGrid] = useState("Empty");
   const [selectedObject, _setSelectedObject] = useState("Wall");
   const [detourAdded, setDetourAdded] = useState(false);
-  const [running, setRunning] = useState(false);
+  const [running, _setRunning] = useState(false);
   const [grid, setGrid] = useState([]);
   const selectedObjectRef = React.useRef(selectedObject);
+  const runningRef = React.useRef(running);
   const gridRef = useRef();
   let mousePressed = false;
 
@@ -47,6 +48,11 @@ function Pathfinder() {
   const setSelectedObject = (object) => {
     selectedObjectRef.current = object;
     _setSelectedObject(object);
+  };
+
+  const setRunning = (running) => {
+    runningRef.current = running;
+    _setRunning(running);
   };
 
   const handleAlgorithmChange = (e) => {
@@ -191,7 +197,7 @@ function Pathfinder() {
         'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
       )[0];
       node.firstElementChild.classList.remove("search-path");
-      node.classList.add("shortest-path");
+      node.firstElementChild.classList.add("shortest-path");
       if (shortestPath.length === 0) {
         clearInterval(update);
         setRunning(false);
@@ -218,7 +224,7 @@ function Pathfinder() {
     )
       return false;
     //TODO move running check to ref
-    if (running === true) return;
+    if (runningRef.current === true) return;
     mousePressed = true;
     updateGrid(node, ref);
   };
@@ -243,14 +249,20 @@ function Pathfinder() {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
           domNodeElement.classList.add("wall");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.WALL;
           break;
         case GRID_OBJECTS.WALL:
           domNodeElement.classList.remove("wall");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WEIGHT:
           domNodeElement.classList.remove("weight");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
           domNodeElement.classList.add("wall");
           node.objectType = GRID_OBJECTS.WALL;
           break;
@@ -261,14 +273,20 @@ function Pathfinder() {
       switch (node.objectType) {
         case GRID_OBJECTS.EMPTY:
           domNodeElement.classList.add("weight");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.WEIGHT;
           break;
         case GRID_OBJECTS.WEIGHT:
           domNodeElement.classList.remove("weight");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WALL:
           domNodeElement.classList.remove("wall");
+          domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("shortest-path");
           domNodeElement.classList.add("weight");
           node.objectType = GRID_OBJECTS.WEIGHT;
           break;
@@ -277,6 +295,8 @@ function Pathfinder() {
       }
     } else if (selectedObjectRef.current === "Detour") {
       domNodeElement.classList.remove("weight");
+      domNodeElement.classList.remove("search-path");
+      domNodeElement.classList.remove("shortest-path");
       domNodeElement.classList.remove("wall");
       node.objectType = GRID_OBJECTS.DETOUR;
       setGrid([...grid]);
