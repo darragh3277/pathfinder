@@ -14,6 +14,7 @@ import StairsPattern from "./algorithms/grids/StairsPattern";
 import Dijkstra from "./algorithms/pathfinders/Dijkstra";
 import AStar from "./algorithms/pathfinders/AStar";
 import GreedyBFS from "./algorithms/pathfinders/GreedyBFS";
+import BFS from "./algorithms/pathfinders/BFS";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -170,6 +171,7 @@ function Pathfinder() {
       case "Greedy Best-First Search":
         return new GreedyBFS(grid);
       case "Breadth-First Search":
+        return new BFS(grid);
       case "Depth-First Search":
       default:
         return new Dijkstra(grid);
