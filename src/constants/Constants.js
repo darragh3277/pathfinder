@@ -15,11 +15,8 @@ export const ALGORITHMS = [
   { id: 1, name: "Dijkstra" },
   { id: 2, name: "A*" },
   { id: 3, name: "Greedy Best-first Search" },
-  { id: 4, name: "Swarm Algorithm" },
-  { id: 5, name: "Convergent Swarm Algorithm" },
-  { id: 6, name: "Bidirectional Swarm Algorithm" },
-  { id: 7, name: "Breadth-first Search" },
-  { id: 8, name: "Depth-first Search" },
+  { id: 4, name: "Breadth-first Search" },
+  { id: 5, name: "Depth-first Search" },
 ];
 
 export const GRID_TYPES = [
