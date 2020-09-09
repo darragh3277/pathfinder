@@ -358,7 +358,7 @@ function Pathfinder() {
           .querySelectorAll(
             'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
           )[0]
-          .classList.add(objectClass);
+          .firstElementChild.classList.add(objectClass);
         if (steps.length === 0) {
           clearInterval(update);
           setRunning(false);
