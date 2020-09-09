@@ -1,6 +1,6 @@
 import BasePathfinder from "./BasePathfinder";
 import { GRID_OBJECTS, WEIGHT_VALUE } from "../../constants/Constants";
-import { getObjectCoords, manhattanDistance } from "../../utils/Helpers";
+import { manhattanDistance } from "../../utils/Helpers";
 
 class Dijkstra extends BasePathfinder {
   constructor(grid) {
@@ -16,7 +16,6 @@ class Dijkstra extends BasePathfinder {
       this.shortestPath = finishPath.concat(detourPath);
     } else {
       this.shortestPath = this.solve(this.startCoords, this.endCoords, false);
-      console.log([...this.searchPath]);
     }
   };
 

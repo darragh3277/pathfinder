@@ -15,7 +15,6 @@ class Dijkstra extends BasePathfinder {
       this.shortestPath = finishPath.concat(detourPath);
     } else {
       this.shortestPath = this.solve(this.startCoords, this.endCoords, false);
-      console.log([...this.searchPath]);
     }
   };
 
