@@ -14,8 +14,9 @@ class Dijkstra extends BasePathfinder {
     const unvisitedNodes = this.getUnvisitedNodes();
     while (unvisitedNodes.length > 0) {
       //sort unvisited nodes by distance
-      this.sortNodesByKey(unvisitedNodes, "distance");
+      this.sortNodesByKey(unvisitedNodes, "heuristic");
       const currentNode = unvisitedNodes.shift();
+      // console.log([...unvisitedNodes]);
       //end if the current node is the end object
       if (currentNode.objectType === GRID_OBJECTS.END) {
         this.shortestPath = this.extractShortestPath(currentNode);
@@ -51,6 +52,13 @@ class Dijkstra extends BasePathfinder {
         ) {
           neighbourNode.prevNode = currentNode;
           neighbourNode.distance = newDistance;
+          const manhattan = manhattanDistance(
+            neighbourNode.col,
+            neighbourNode.row,
+            endCoords.col,
+            endCoords.row
+          );
+          neighbourNode.heuristic = newDistance + manhattan;
         }
       }
     }

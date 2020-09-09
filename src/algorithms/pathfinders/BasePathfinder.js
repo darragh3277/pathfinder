@@ -26,6 +26,7 @@ class BasePathfinder {
           continue;
         } else if (node.objectType === GRID_OBJECTS.START) {
           node.distance = 0;
+          node.heuristic = 0;
         }
         unvistitedNodes.push(node);
       }

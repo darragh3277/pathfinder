@@ -100,6 +100,7 @@ function Pathfinder() {
           node.objectType = GRID_OBJECTS.EMPTY;
         }
         node.distance = Infinity;
+        node.heuristic = Infinity;
         node.prevNode = null;
         node.visited = false;
         return node;
