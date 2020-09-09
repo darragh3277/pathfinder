@@ -27,9 +27,9 @@ class Dijkstra extends BasePathfinder {
       if (currentNode.distance === Infinity) return;
       //add the current node to the search path stack (excluding the start node)
       //and set visited to true
-      if (currentNode.distance > 0) {
-        this.searchPath.push(currentNode);
-      }
+      // if (currentNode.distance > 0) {
+      this.searchPath.push(currentNode);
+      // }
       currentNode.visited = true;
       //get all the current nodes neighbours
       const unvisitedNeighbours = this.getUnvisitedNeighbours(currentNode);

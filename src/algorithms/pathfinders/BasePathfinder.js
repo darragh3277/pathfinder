@@ -60,7 +60,7 @@ class BasePathfinder {
 
   extractShortestPath = (node) => {
     const path = [];
-    while (node.prevNode !== null) {
+    while (node !== null) {
       path.push(node);
       node = node.prevNode;
     }
