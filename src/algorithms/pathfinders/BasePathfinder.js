@@ -54,8 +54,8 @@ class BasePathfinder {
     return neighbours;
   };
 
-  sortNodesByDistance = (nodes) => {
-    return nodes.sort((a, b) => (a.distance > b.distance ? 1 : -1));
+  sortNodesByKey = (nodes, property) => {
+    return nodes.sort((a, b) => (a[property] > b[property] ? 1 : -1));
   };
 
   extractShortestPath = (node) => {

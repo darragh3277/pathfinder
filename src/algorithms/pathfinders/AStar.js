@@ -9,13 +9,12 @@ class Dijkstra extends BasePathfinder {
   }
 
   solve = () => {
-    let found = false;
     const endCoords = getObjectCoords(this.grid, GRID_OBJECTS.END);
     //get a list of all unvisited nodes
     const unvisitedNodes = this.getUnvisitedNodes();
     while (unvisitedNodes.length > 0) {
       //sort unvisited nodes by distance
-      this.sortNodesByDistance(unvisitedNodes);
+      this.sortNodesByKey(unvisitedNodes, "distance");
       const currentNode = unvisitedNodes.shift();
       //end if the current node is the end object
       if (currentNode.objectType === GRID_OBJECTS.END) {
@@ -25,11 +24,9 @@ class Dijkstra extends BasePathfinder {
       //if the closest node is set to infinity then it's an
       //unreachable node, return
       if (currentNode.distance === Infinity) return;
-      //add the current node to the search path stack (excluding the start node)
+      //add the current node to the search path stack
       //and set visited to true
-      // if (currentNode.distance > 0) {
       this.searchPath.push(currentNode);
-      // }
       currentNode.visited = true;
       //get all the current nodes neighbours
       const unvisitedNeighbours = this.getUnvisitedNeighbours(currentNode);
