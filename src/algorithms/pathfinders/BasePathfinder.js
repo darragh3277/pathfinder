@@ -26,6 +26,7 @@ class BasePathfinder {
           continue;
         } else if (node.objectType === GRID_OBJECTS.START) {
           node.distance = 0;
+          node.heuristic = 0;
         }
         unvistitedNodes.push(node);
       }
@@ -54,13 +55,13 @@ class BasePathfinder {
     return neighbours;
   };
 
-  sortNodesByDistance = (nodes) => {
-    return nodes.sort((a, b) => (a.distance > b.distance ? 1 : -1));
+  sortNodesByKey = (nodes, property) => {
+    return nodes.sort((a, b) => (a[property] > b[property] ? 1 : -1));
   };
 
   extractShortestPath = (node) => {
     const path = [];
-    while (node.prevNode !== null) {
+    while (node !== null) {
       path.push(node);
       node = node.prevNode;
     }

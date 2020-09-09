@@ -12,6 +12,7 @@ import RecursiveDivisionHorizontal from "./algorithms/grids/RecursiveDivisionHor
 import EmptyGrid from "./algorithms/grids/EmptyGrid";
 import StairsPattern from "./algorithms/grids/StairsPattern";
 import Dijkstra from "./algorithms/pathfinders/Dijkstra";
+import AStar from "./algorithms/pathfinders/AStar";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -99,6 +100,7 @@ function Pathfinder() {
           node.objectType = GRID_OBJECTS.EMPTY;
         }
         node.distance = Infinity;
+        node.heuristic = Infinity;
         node.prevNode = null;
         node.visited = false;
         return node;
@@ -160,11 +162,20 @@ function Pathfinder() {
     return buildGrid();
   }, []);
 
+  const getAlgorithm = (grid) => {
+    switch (selectedAlgorithm) {
+      case "A*":
+        return new AStar(grid);
+      default:
+        return new Dijkstra(grid);
+    }
+  };
+
   const handleClickRunButton = () => {
     clearPath();
     setGrid([...grid]);
     setRunning(true);
-    const pathfinder = new Dijkstra(grid);
+    const pathfinder = getAlgorithm(grid);
     if (pathfinder) {
       const path = pathfinder.getSearchPath();
       if (path.length > 0) {

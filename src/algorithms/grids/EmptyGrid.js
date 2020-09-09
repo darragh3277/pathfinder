@@ -38,6 +38,7 @@ class EmptyGrid extends BaseGridGenerator {
       col,
       row,
       distance: Infinity,
+      heuristic: Infinity,
       visited: false,
       objectType,
       prevNode: null,
