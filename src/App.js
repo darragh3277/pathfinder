@@ -115,6 +115,9 @@ function Pathfinder() {
     gridRef.current.querySelectorAll(".shortest-path").forEach((path) => {
       path.classList.remove("shortest-path");
     });
+    gridRef.current.querySelectorAll(".secondary").forEach((path) => {
+      path.classList.remove("secondary");
+    });
   };
 
   const handleClickClearPathButton = () => {
@@ -190,11 +193,11 @@ function Pathfinder() {
       if (path.length > 0) {
         const update = setInterval(() => {
           const step = path.shift();
-          gridRef.current
-            .querySelectorAll(
-              'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
-            )[0]
-            .firstElementChild.classList.add("search-path");
+          const node = gridRef.current.querySelectorAll(
+            'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+          )[0].firstElementChild;
+          node.classList.add("search-path");
+          if (step.secondaryPath === true) node.classList.add("secondary");
           if (path.length === 0) {
             clearInterval(update);
             drawShortestPath(pathfinder.getShortestPath());
@@ -217,6 +220,7 @@ function Pathfinder() {
         'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
       )[0];
       node.firstElementChild.classList.remove("search-path");
+      node.firstElementChild.classList.remove("secondary");
       node.firstElementChild.classList.add("shortest-path");
       if (shortestPath.length === 0) {
         clearInterval(update);
@@ -270,18 +274,21 @@ function Pathfinder() {
         case GRID_OBJECTS.EMPTY:
           domNodeElement.classList.add("wall");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.WALL;
           break;
         case GRID_OBJECTS.WALL:
           domNodeElement.classList.remove("wall");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WEIGHT:
           domNodeElement.classList.remove("weight");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           domNodeElement.classList.add("wall");
           node.objectType = GRID_OBJECTS.WALL;
@@ -294,18 +301,21 @@ function Pathfinder() {
         case GRID_OBJECTS.EMPTY:
           domNodeElement.classList.add("weight");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.WEIGHT;
           break;
         case GRID_OBJECTS.WEIGHT:
           domNodeElement.classList.remove("weight");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WALL:
           domNodeElement.classList.remove("wall");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           domNodeElement.classList.add("weight");
           node.objectType = GRID_OBJECTS.WEIGHT;
@@ -316,6 +326,7 @@ function Pathfinder() {
     } else if (selectedObjectRef.current === "Detour") {
       domNodeElement.classList.remove("weight");
       domNodeElement.classList.remove("search-path");
+      domNodeElement.classList.remove("secondary");
       domNodeElement.classList.remove("shortest-path");
       domNodeElement.classList.remove("wall");
       node.objectType = GRID_OBJECTS.DETOUR;

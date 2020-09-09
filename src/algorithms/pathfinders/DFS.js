@@ -1,6 +1,5 @@
 import BasePathfinder from "./BasePathfinder";
-import { GRID_OBJECTS, WEIGHT_VALUE } from "../../constants/Constants";
-import { getObjectCoords, manhattanDistance } from "../../utils/Helpers";
+import { GRID_OBJECTS } from "../../constants/Constants";
 
 class DFS extends BasePathfinder {
   constructor(grid) {

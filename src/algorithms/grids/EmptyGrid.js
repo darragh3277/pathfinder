@@ -42,6 +42,7 @@ class EmptyGrid extends BaseGridGenerator {
       visited: false,
       objectType,
       prevNode: null,
+      secondaryPath: false,
     };
   };
 }
