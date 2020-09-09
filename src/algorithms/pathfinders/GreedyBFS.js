@@ -35,14 +35,20 @@ class GreedyBFS extends BasePathfinder {
         const neighbourNode = unvisitedNeighbours[i];
         const stepCost =
           neighbourNode.objectType === GRID_OBJECTS.WEIGHT ? WEIGHT_VALUE : 1;
-        neighbourNode.prevNode = currentNode;
         const manhattan = manhattanDistance(
           neighbourNode.col,
           neighbourNode.row,
           endCoords.col,
           endCoords.row
         );
-        neighbourNode.heuristic = stepCost + manhattan;
+        const newHeuristic = stepCost + manhattan;
+        if (
+          neighbourNode.heuristic === Infinity ||
+          neighbourNode.heuristic > newHeuristic
+        ) {
+          neighbourNode.prevNode = currentNode;
+          neighbourNode.heuristic = newHeuristic;
+        }
       }
     }
   };
