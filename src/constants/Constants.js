@@ -14,9 +14,9 @@ export const WEIGHT_VALUE = 10;
 export const ALGORITHMS = [
   { id: 1, name: "Dijkstra" },
   { id: 2, name: "A*" },
-  { id: 3, name: "Greedy Best-first Search" },
-  { id: 4, name: "Breadth-first Search" },
-  { id: 5, name: "Depth-first Search" },
+  { id: 3, name: "Greedy Best-First Search" },
+  { id: 4, name: "Breadth-First Search" },
+  { id: 5, name: "Depth-First Search" },
 ];
 
 export const GRID_TYPES = [
