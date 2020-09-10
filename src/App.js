@@ -147,6 +147,7 @@ function Pathfinder() {
     e.target.parentElement.classList.remove("wall");
     e.target.parentElement.classList.remove("weight");
     setGrid([...grid]);
+    clearPath();
   };
 
   const resetGrid = useCallback(() => {
@@ -221,6 +222,7 @@ function Pathfinder() {
       )[0];
       node.firstElementChild.classList.remove("search-path");
       node.firstElementChild.classList.remove("secondary");
+      node.firstElementChild.classList.remove("shortest-path");
       node.firstElementChild.classList.add("shortest-path");
       if (shortestPath.length === 0) {
         clearInterval(update);

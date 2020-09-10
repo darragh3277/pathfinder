@@ -10,9 +10,11 @@ class Dijkstra extends BasePathfinder {
   init = () => {
     if (this.detourCoords.col !== null) {
       const detourPath = this.solve(this.startCoords, this.detourCoords, false);
-      this.resetNodes();
-      const finishPath = this.solve(this.detourCoords, this.endCoords, true);
-      this.shortestPath = finishPath.concat(detourPath);
+      if (detourPath.length > 0) {
+        this.resetNodes();
+        const finishPath = this.solve(this.detourCoords, this.endCoords, true);
+        this.shortestPath = finishPath.concat(detourPath);
+      }
     } else {
       this.shortestPath = this.solve(this.startCoords, this.endCoords, false);
     }
@@ -32,7 +34,7 @@ class Dijkstra extends BasePathfinder {
       }
       //if the closest node is set to infinity then it's an
       //unreachable node, return
-      if (currentNode.distance === Infinity) return;
+      if (currentNode.distance === Infinity) return [];
       //add the current node to the search path stack
       //and set visited to true
       this.addToSearchPath(currentNode, secondaryPath);

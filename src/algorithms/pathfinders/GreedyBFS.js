@@ -1,6 +1,6 @@
 import BasePathfinder from "./BasePathfinder";
 import { GRID_OBJECTS, WEIGHT_VALUE } from "../../constants/Constants";
-import { getObjectCoords, manhattanDistance } from "../../utils/Helpers";
+import { manhattanDistance } from "../../utils/Helpers";
 
 class GreedyBFS extends BasePathfinder {
   constructor(grid) {
@@ -11,9 +11,11 @@ class GreedyBFS extends BasePathfinder {
   init = () => {
     if (this.detourCoords.col !== null) {
       const detourPath = this.solve(this.startCoords, this.detourCoords, false);
-      this.resetNodes();
-      const finishPath = this.solve(this.detourCoords, this.endCoords, true);
-      this.shortestPath = finishPath.concat(detourPath);
+      if (detourPath.length > 0) {
+        this.resetNodes();
+        const finishPath = this.solve(this.detourCoords, this.endCoords, true);
+        this.shortestPath = finishPath.concat(detourPath);
+      }
     } else {
       this.shortestPath = this.solve(this.startCoords, this.endCoords, false);
     }

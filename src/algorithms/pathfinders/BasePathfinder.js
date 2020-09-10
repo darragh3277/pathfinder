@@ -58,19 +58,23 @@ class BasePathfinder {
     const neighbours = [];
     if (currentNode.row - 1 >= 0) {
       const node = this.grid[currentNode.row - 1][currentNode.col];
-      if (node.visited === false) neighbours.push(node);
+      if (node.visited === false && node.objectType !== GRID_OBJECTS.WALL)
+        neighbours.push(node);
     }
     if (currentNode.col + 1 < this.grid[0].length) {
       const node = this.grid[currentNode.row][currentNode.col + 1];
-      if (node.visited === false) neighbours.push(node);
+      if (node.visited === false && node.objectType !== GRID_OBJECTS.WALL)
+        neighbours.push(node);
     }
     if (currentNode.row + 1 < this.grid.length) {
       const node = this.grid[currentNode.row + 1][currentNode.col];
-      if (node.visited === false) neighbours.push(node);
+      if (node.visited === false && node.objectType !== GRID_OBJECTS.WALL)
+        neighbours.push(node);
     }
     if (currentNode.col - 1 >= 0) {
       const node = this.grid[currentNode.row][currentNode.col - 1];
-      if (node.visited === false) neighbours.push(node);
+      if (node.visited === false && node.objectType !== GRID_OBJECTS.WALL)
+        neighbours.push(node);
     }
     return neighbours;
   };
