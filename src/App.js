@@ -222,7 +222,11 @@ function Pathfinder() {
       )[0];
       node.firstElementChild.classList.remove("search-path");
       node.firstElementChild.classList.remove("secondary");
-      node.firstElementChild.classList.remove("shortest-path");
+      //if the shortest path retraces itself we retrigger the animation
+      if (node.firstElementChild.classList.contains("shortest-path")) {
+        node.firstElementChild.classList.remove("shortest-path");
+        void node.firstElementChild.offsetWidth;
+      }
       node.firstElementChild.classList.add("shortest-path");
       if (shortestPath.length === 0) {
         clearInterval(update);
