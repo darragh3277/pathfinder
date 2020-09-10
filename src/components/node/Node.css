@@ -2,7 +2,7 @@
 .weight {
   animation-name: popIn;
   animation-duration: 0.2s;
-  background-image: url(/icons/weight.svg);
+  background-image: url(weight.svg);
 }
 
 .wall {
