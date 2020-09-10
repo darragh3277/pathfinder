@@ -197,6 +197,10 @@ function Pathfinder() {
           const node = gridRef.current.querySelectorAll(
             'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
           )[0].firstElementChild;
+          if (node.classList.contains("search-path")) {
+            node.classList.remove("search-path");
+            void node.offsetWidth;
+          }
           node.classList.add("search-path");
           if (step.secondaryPath === true) node.classList.add("secondary");
           if (path.length === 0) {
@@ -253,7 +257,6 @@ function Pathfinder() {
       node.objectType !== GRID_OBJECTS.WEIGHT
     )
       return false;
-    //TODO move running check to ref
     if (runningRef.current === true) return;
     mousePressed = true;
     updateGrid(node, ref);
