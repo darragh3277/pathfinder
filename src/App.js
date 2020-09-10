@@ -188,6 +188,7 @@ function Pathfinder() {
     clearPath();
     setGrid([...grid]);
     setRunning(true);
+    setMobileOpen(false);
     const pathfinder = getAlgorithm(grid);
     if (pathfinder) {
       const path = pathfinder.getSearchPath();
@@ -372,6 +373,7 @@ function Pathfinder() {
         return;
     }
     setRunning(true);
+    setMobileOpen(false);
     const steps = gridAlgorithm.getSteps();
     if (steps.length > 0) {
       const update = setInterval(() => {

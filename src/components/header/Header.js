@@ -5,6 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import Tutorial from "../tutorial/Tutorial";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -15,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       display: "none",
     },
+  },
+  toolbarButton: {
+    marginLeft: "auto",
   },
 }));
 
@@ -37,6 +41,9 @@ const Header = (props) => {
         <Typography variant="h6" noWrap>
           Pathfinder
         </Typography>
+        <div className={classes.toolbarButton}>
+          <Tutorial />
+        </div>
       </Toolbar>
     </AppBar>
   );
