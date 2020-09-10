@@ -1,8 +1,6 @@
 import BasePathfinder from "./BasePathfinder";
-import { GRID_OBJECTS, WEIGHT_VALUE } from "../../constants/Constants";
-import { manhattanDistance } from "../../utils/Helpers";
 
-class Dijkstra extends BasePathfinder {
+class BFS extends BasePathfinder {
   constructor(grid) {
     super(grid);
     this.init();
@@ -35,45 +33,21 @@ class Dijkstra extends BasePathfinder {
       }
       //if the closest node is set to infinity then it's an
       //unreachable node, return
-      if (currentNode.distance === Infinity) return;
+      if (currentNode.heuristic === Infinity) return;
       //add the current node to the search path stack
       //and set visited to true
       this.addToSearchPath(currentNode, secondaryPath);
       currentNode.visited = true;
       //get all the current nodes neighbours
       const unvisitedNeighbours = this.getUnvisitedNeighbours(currentNode);
-      //update neighbour nodes distance
+      //update neighbour nodes heruistics
       for (let i = 0; i < unvisitedNeighbours.length; i++) {
         const neighbourNode = unvisitedNeighbours[i];
-        const stepCost =
-          neighbourNode.objectType === GRID_OBJECTS.WEIGHT ? WEIGHT_VALUE : 1;
-
-        const currentDistance =
-          neighbourNode.distance === Infinity
-            ? stepCost
-            : neighbourNode.distance;
-
-        const newDistance = currentNode.distance + stepCost;
-
-        //if new distance is less than existing one
-        //or node is at infinity then update
-        if (
-          neighbourNode.distance === Infinity ||
-          currentDistance > newDistance
-        ) {
-          neighbourNode.prevNode = currentNode;
-          neighbourNode.distance = newDistance;
-          const manhattan = manhattanDistance(
-            neighbourNode.col,
-            neighbourNode.row,
-            pointB.col,
-            pointB.row
-          );
-          neighbourNode.heuristic = newDistance + manhattan;
-        }
+        neighbourNode.heuristic = currentNode.heuristic + 1;
+        neighbourNode.prevNode = currentNode;
       }
     }
   };
 }
 
-export default Dijkstra;
+export default BFS;

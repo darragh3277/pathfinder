@@ -14,6 +14,8 @@ import StairsPattern from "./algorithms/grids/StairsPattern";
 import Dijkstra from "./algorithms/pathfinders/Dijkstra";
 import AStar from "./algorithms/pathfinders/AStar";
 import GreedyBFS from "./algorithms/pathfinders/GreedyBFS";
+import BFS from "./algorithms/pathfinders/BFS";
+import DFS from "./algorithms/pathfinders/DFS";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -113,6 +115,9 @@ function Pathfinder() {
     gridRef.current.querySelectorAll(".shortest-path").forEach((path) => {
       path.classList.remove("shortest-path");
     });
+    gridRef.current.querySelectorAll(".secondary").forEach((path) => {
+      path.classList.remove("secondary");
+    });
   };
 
   const handleClickClearPathButton = () => {
@@ -142,6 +147,7 @@ function Pathfinder() {
     e.target.parentElement.classList.remove("wall");
     e.target.parentElement.classList.remove("weight");
     setGrid([...grid]);
+    clearPath();
   };
 
   const resetGrid = useCallback(() => {
@@ -170,7 +176,9 @@ function Pathfinder() {
       case "Greedy Best-First Search":
         return new GreedyBFS(grid);
       case "Breadth-First Search":
+        return new BFS(grid);
       case "Depth-First Search":
+        return new DFS(grid);
       default:
         return new Dijkstra(grid);
     }
@@ -180,17 +188,22 @@ function Pathfinder() {
     clearPath();
     setGrid([...grid]);
     setRunning(true);
+    setMobileOpen(false);
     const pathfinder = getAlgorithm(grid);
     if (pathfinder) {
       const path = pathfinder.getSearchPath();
       if (path.length > 0) {
         const update = setInterval(() => {
           const step = path.shift();
-          gridRef.current
-            .querySelectorAll(
-              'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
-            )[0]
-            .firstElementChild.classList.add("search-path");
+          const node = gridRef.current.querySelectorAll(
+            'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
+          )[0].firstElementChild;
+          if (node.classList.contains("search-path")) {
+            node.classList.remove("search-path");
+            void node.offsetWidth;
+          }
+          node.classList.add("search-path");
+          if (step.secondaryPath === true) node.classList.add("secondary");
           if (path.length === 0) {
             clearInterval(update);
             drawShortestPath(pathfinder.getShortestPath());
@@ -213,6 +226,12 @@ function Pathfinder() {
         'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
       )[0];
       node.firstElementChild.classList.remove("search-path");
+      node.firstElementChild.classList.remove("secondary");
+      //if the shortest path retraces itself we retrigger the animation
+      if (node.firstElementChild.classList.contains("shortest-path")) {
+        node.firstElementChild.classList.remove("shortest-path");
+        void node.firstElementChild.offsetWidth;
+      }
       node.firstElementChild.classList.add("shortest-path");
       if (shortestPath.length === 0) {
         clearInterval(update);
@@ -239,7 +258,6 @@ function Pathfinder() {
       node.objectType !== GRID_OBJECTS.WEIGHT
     )
       return false;
-    //TODO move running check to ref
     if (runningRef.current === true) return;
     mousePressed = true;
     updateGrid(node, ref);
@@ -266,18 +284,21 @@ function Pathfinder() {
         case GRID_OBJECTS.EMPTY:
           domNodeElement.classList.add("wall");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.WALL;
           break;
         case GRID_OBJECTS.WALL:
           domNodeElement.classList.remove("wall");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WEIGHT:
           domNodeElement.classList.remove("weight");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           domNodeElement.classList.add("wall");
           node.objectType = GRID_OBJECTS.WALL;
@@ -290,18 +311,21 @@ function Pathfinder() {
         case GRID_OBJECTS.EMPTY:
           domNodeElement.classList.add("weight");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.WEIGHT;
           break;
         case GRID_OBJECTS.WEIGHT:
           domNodeElement.classList.remove("weight");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           node.objectType = GRID_OBJECTS.EMPTY;
           break;
         case GRID_OBJECTS.WALL:
           domNodeElement.classList.remove("wall");
           domNodeElement.classList.remove("search-path");
+          domNodeElement.classList.remove("secondary");
           domNodeElement.classList.remove("shortest-path");
           domNodeElement.classList.add("weight");
           node.objectType = GRID_OBJECTS.WEIGHT;
@@ -312,6 +336,7 @@ function Pathfinder() {
     } else if (selectedObjectRef.current === "Detour") {
       domNodeElement.classList.remove("weight");
       domNodeElement.classList.remove("search-path");
+      domNodeElement.classList.remove("secondary");
       domNodeElement.classList.remove("shortest-path");
       domNodeElement.classList.remove("wall");
       node.objectType = GRID_OBJECTS.DETOUR;
@@ -348,6 +373,7 @@ function Pathfinder() {
         return;
     }
     setRunning(true);
+    setMobileOpen(false);
     const steps = gridAlgorithm.getSteps();
     if (steps.length > 0) {
       const update = setInterval(() => {
@@ -358,7 +384,7 @@ function Pathfinder() {
           .querySelectorAll(
             'td[data-col="' + step.col + '"][data-row="' + step.row + '"]'
           )[0]
-          .classList.add(objectClass);
+          .firstElementChild.classList.add(objectClass);
         if (steps.length === 0) {
           clearInterval(update);
           setRunning(false);

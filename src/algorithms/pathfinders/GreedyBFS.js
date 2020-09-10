@@ -1,15 +1,28 @@
 import BasePathfinder from "./BasePathfinder";
 import { GRID_OBJECTS, WEIGHT_VALUE } from "../../constants/Constants";
-import { getObjectCoords, manhattanDistance } from "../../utils/Helpers";
+import { manhattanDistance } from "../../utils/Helpers";
 
 class GreedyBFS extends BasePathfinder {
   constructor(grid) {
     super(grid);
-    this.solve();
+    this.init();
   }
 
-  solve = () => {
-    const endCoords = getObjectCoords(this.grid, GRID_OBJECTS.END);
+  init = () => {
+    if (this.detourCoords.col !== null) {
+      const detourPath = this.solve(this.startCoords, this.detourCoords, false);
+      if (detourPath.length > 0) {
+        this.resetNodes();
+        const finishPath = this.solve(this.detourCoords, this.endCoords, true);
+        this.shortestPath = finishPath.concat(detourPath);
+      }
+    } else {
+      this.shortestPath = this.solve(this.startCoords, this.endCoords, false);
+    }
+  };
+
+  solve = (pointA, pointB, secondaryPath) => {
+    this.initStartObject(pointA);
     //get a list of all unvisited nodes
     const unvisitedNodes = this.getUnvisitedNodes();
     while (unvisitedNodes.length > 0) {
@@ -17,16 +30,15 @@ class GreedyBFS extends BasePathfinder {
       this.sortNodesByKey(unvisitedNodes, "heuristic");
       const currentNode = unvisitedNodes.shift();
       //end if the current node is the end object
-      if (currentNode.objectType === GRID_OBJECTS.END) {
-        this.shortestPath = this.extractShortestPath(currentNode);
-        break;
+      if (this.checkIsDestination(currentNode, pointB)) {
+        return this.extractShortestPath(currentNode);
       }
       //if the closest node is set to infinity then it's an
       //unreachable node, return
       if (currentNode.heuristic === Infinity) return;
       //add the current node to the search path stack
       //and set visited to true
-      this.searchPath.push(currentNode);
+      this.addToSearchPath(currentNode, secondaryPath);
       currentNode.visited = true;
       //get all the current nodes neighbours
       const unvisitedNeighbours = this.getUnvisitedNeighbours(currentNode);
@@ -35,14 +47,20 @@ class GreedyBFS extends BasePathfinder {
         const neighbourNode = unvisitedNeighbours[i];
         const stepCost =
           neighbourNode.objectType === GRID_OBJECTS.WEIGHT ? WEIGHT_VALUE : 1;
-        neighbourNode.prevNode = currentNode;
         const manhattan = manhattanDistance(
           neighbourNode.col,
           neighbourNode.row,
-          endCoords.col,
-          endCoords.row
+          pointB.col,
+          pointB.row
         );
-        neighbourNode.heuristic = stepCost + manhattan;
+        const newHeuristic = stepCost + manhattan;
+        if (
+          neighbourNode.heuristic === Infinity ||
+          neighbourNode.heuristic > newHeuristic
+        ) {
+          neighbourNode.prevNode = currentNode;
+          neighbourNode.heuristic = newHeuristic;
+        }
       }
     }
   };
