@@ -11,3 +11,7 @@ Install node and clone the project.
 Run npm install
 
 Run npm start
+
+## Run using Docker-Compose
+
+docker-compose up
